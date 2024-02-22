@@ -12,12 +12,22 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { useGameService } from 'src/context/gameServiceContext';
 import Iconify from 'src/components/iconify';
 import { Chip } from '@mui/material';
+import './css/explosion.css';
+import { useSpring } from 'react-spring';
 
 // ----------------------------------------------------------------------
 
-export default function ResetQuests({ title, subheader, list, ...other }) {
+export default function ResetQuests({ title, subheader, list, fetchQuests, ...other }) {
   const { resetQuests } = useGameService();
   const [selected, setSelected] = useState([]);
+
+  const [isExploding, setIsExploding] = useState(false);
+
+  const spring = useSpring({
+    from: { scale: 1 },
+    to: { scale: 10 },
+    config: { duration: 500 },
+  });
 
   const handleClickComplete = (taskId) => {
     const tasksCompleted = selected.includes(taskId)
@@ -28,8 +38,22 @@ export default function ResetQuests({ title, subheader, list, ...other }) {
   };
 
   const handleReset = () => {
+    setIsExploding(true);
+    const explosionElement = document.createElement('div');
+    explosionElement.className = 'explosion';
+    // Position it dynamically or use static values
+    explosionElement.style.top = '50%'; // Example position
+    explosionElement.style.left = '50%'; // Example position
+    document.body.appendChild(explosionElement);
+
     resetQuests(selected);
     setSelected([]);
+    fetchQuests();
+
+    // Remove the element after the animation completes
+    setTimeout(() => {
+      document.body.removeChild(explosionElement);
+    }, 500); // Match the duration of the animation
   };
 
   const handleSelectAll = () => {
@@ -46,6 +70,7 @@ export default function ResetQuests({ title, subheader, list, ...other }) {
 
   return (
     <Card {...other}>
+      <div style={{ transform: spring.scale }}>💥</div>
       <CardHeader
         title={title}
         subheader={subheader}
@@ -83,15 +108,28 @@ export default function ResetQuests({ title, subheader, list, ...other }) {
   );
 }
 
-AnalyticsTasks.propTypes = {
+ResetQuests.propTypes = {
   list: PropTypes.array,
   subheader: PropTypes.string,
   title: PropTypes.string,
+  fetchQuests: PropTypes.func,
 };
 
 // ----------------------------------------------------------------------
 
 function TaskItem({ task, checked, onChange }) {
+  const getStatusChipColor = (status) => {
+    switch (status) {
+      case 'NOT_STARTED':
+        return { backgroundColor: '#e0e0e0', color: 'black' }; // Grey
+      case 'STARTED':
+        return { backgroundColor: '#2196f3', color: 'white' }; // Blue
+      case 'COMPLETE':
+        return { backgroundColor: '#4caf50', color: 'white' }; // Green
+      default:
+        return { backgroundColor: 'transparent', color: 'black' };
+    }
+  };
   const [open, setOpen] = useState(null);
 
   const handleOpenMenu = (event) => {
@@ -134,10 +172,10 @@ function TaskItem({ task, checked, onChange }) {
           '&:not(:last-of-type)': {
             borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
           },
-          ...(checked && {
-            color: 'text.disabled',
-            textDecoration: 'line-through',
-          }),
+          // ...(checked && {
+          //   color: 'text.disabled',
+          //   textDecoration: 'line-through',
+          // }),
         }}
       >
         <FormControlLabel
@@ -151,9 +189,8 @@ function TaskItem({ task, checked, onChange }) {
           color="primary" // Example color, adjust based on your task.status value
           size="small"
           sx={{
-            ml: 1, // Add some left margin for spacing
-            // Customize the color based on task.status here
-            // Example: backgroundColor: task.status === 'Completed' ? 'green' : 'red',
+            ml: 1,
+            ...getStatusChipColor(task.status),
           }}
         />
         {/* Progress Chip */}

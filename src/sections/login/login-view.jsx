@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
@@ -19,29 +22,47 @@ import { bgGradient } from 'src/theme/css';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
-
+import StemuliNavigator from 'src/utils/stemuli-navigator';
+import { useAuthContext } from 'src/context/authContext';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
+  const { setUser } = useAuthContext();
   const theme = useTheme();
 
   const router = useRouter();
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [tenant, setTenant] = useState('REACH');
 
-  const handleClick = () => {
-    router.push('/dashboard');
+  const stemuliNavigator = new StemuliNavigator();
+
+  const handleClick = async () => {
+    const response = await stemuliNavigator.signIn(tenant, email, password);
+
+    if (response) {
+      setUser(response);
+      router.push('/');
+    }
+  };
+
+  const handleChange = (event) => {
+    stemuliNavigator.setTenant(event.target.value);
+    setTenant(event.target.value);
   };
 
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField name="email" label="Email address" onChange={(e) => setEmail(e.target.value)} />
 
         <TextField
           name="password"
           label="Password"
           type={showPassword ? 'text' : 'password'}
+          onChange={(e) => setPassword(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -52,6 +73,17 @@ export default function LoginView() {
             ),
           }}
         />
+        <Select
+          value={tenant}
+          onChange={handleChange}
+          displayEmpty
+          inputProps={{ 'aria-label': 'Account type' }}
+          fullWidth
+          sx={{ mt: 1 }}
+        >
+          <MenuItem value="REACH">Reach</MenuItem>
+          <MenuItem value="STRIDE">Stride</MenuItem>
+        </Select>
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>

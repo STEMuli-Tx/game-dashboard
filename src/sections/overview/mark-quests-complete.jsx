@@ -15,8 +15,8 @@ import { Chip } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-export default function ResetQuests({ title, subheader, list, ...other }) {
-  const { resetQuests } = useGameService();
+export default function MarkQuestsComplete({ title, subheader, list, fetchQuests, ...other }) {
+  const { markQuestsComplete } = useGameService();
   const [selected, setSelected] = useState([]);
 
   const handleClickComplete = (taskId) => {
@@ -27,9 +27,10 @@ export default function ResetQuests({ title, subheader, list, ...other }) {
     setSelected(tasksCompleted);
   };
 
-  const handleReset = () => {
-    resetQuests(selected);
+  const handleMarkComplete = () => {
+    markQuestsComplete(selected);
     setSelected([]);
+    fetchQuests();
   };
 
   const handleSelectAll = () => {
@@ -42,7 +43,7 @@ export default function ResetQuests({ title, subheader, list, ...other }) {
   };
 
   // Check if there are any selected tasks
-  const isResetDisabled = selected.length === 0;
+  const isCompleteButtonDisabled = selected.length === 0;
 
   return (
     <Card {...other}>
@@ -62,10 +63,23 @@ export default function ResetQuests({ title, subheader, list, ...other }) {
             <Button
               variant="outlined"
               size="small"
-              onClick={handleReset}
-              disabled={isResetDisabled}
+              onClick={handleMarkComplete}
+              disabled={isCompleteButtonDisabled}
+              sx={{
+                ...(isCompleteButtonDisabled
+                  ? {}
+                  : {
+                      borderColor: 'green', // Outline color
+                      color: 'green', // Text color
+                      '&:hover': {
+                        backgroundColor: 'green', // Background color on hover
+                        borderColor: 'darkgreen', // Border color on hover
+                        color: '#fff', // Text color on hover
+                      },
+                    }),
+              }}
             >
-              Reset
+              Mark Complete
             </Button>
           </>
         }
@@ -83,15 +97,28 @@ export default function ResetQuests({ title, subheader, list, ...other }) {
   );
 }
 
-AnalyticsTasks.propTypes = {
+MarkQuestsComplete.propTypes = {
   list: PropTypes.array,
   subheader: PropTypes.string,
   title: PropTypes.string,
+  fetchQuests: PropTypes.func,
 };
 
 // ----------------------------------------------------------------------
 
 function TaskItem({ task, checked, onChange }) {
+  const getStatusChipColor = (status) => {
+    switch (status) {
+      case 'NOT_STARTED':
+        return { backgroundColor: '#e0e0e0', color: 'black' }; // Grey
+      case 'STARTED':
+        return { backgroundColor: '#2196f3', color: 'white' }; // Blue
+      case 'COMPLETE':
+        return { backgroundColor: '#4caf50', color: 'white' }; // Green
+      default:
+        return { backgroundColor: 'transparent', color: 'black' };
+    }
+  };
   const [open, setOpen] = useState(null);
 
   const handleOpenMenu = (event) => {
@@ -134,10 +161,10 @@ function TaskItem({ task, checked, onChange }) {
           '&:not(:last-of-type)': {
             borderBottom: (theme) => `dashed 1px ${theme.palette.divider}`,
           },
-          ...(checked && {
-            color: 'text.disabled',
-            textDecoration: 'line-through',
-          }),
+          // ...(checked && {
+          //   color: 'text.disabled',
+          //   textDecoration: 'line-through',
+          // }),
         }}
       >
         <FormControlLabel
@@ -151,9 +178,8 @@ function TaskItem({ task, checked, onChange }) {
           color="primary" // Example color, adjust based on your task.status value
           size="small"
           sx={{
-            ml: 1, // Add some left margin for spacing
-            // Customize the color based on task.status here
-            // Example: backgroundColor: task.status === 'Completed' ? 'green' : 'red',
+            ml: 1,
+            ...getStatusChipColor(task.status),
           }}
         />
         {/* Progress Chip */}
