@@ -14,10 +14,11 @@ import Iconify from 'src/components/iconify';
 import { Chip } from '@mui/material';
 import './css/explosion.css';
 import { useSpring } from 'react-spring';
+import Skeleton from '@mui/material/Skeleton';
 
 // ----------------------------------------------------------------------
 
-export default function ResetQuests({ title, subheader, list, fetchQuests, ...other }) {
+export default function ResetQuests({ title, subheader, list, fetchQuests, isLoading, ...other }) {
   const { resetQuests } = useGameService();
   const [selected, setSelected] = useState([]);
 
@@ -70,7 +71,7 @@ export default function ResetQuests({ title, subheader, list, fetchQuests, ...ot
 
   return (
     <Card {...other}>
-      <div style={{ transform: spring.scale }}>💥</div>
+      {/* <div style={{ transform: spring.scale }}>💥</div> */}
       <CardHeader
         title={title}
         subheader={subheader}
@@ -96,14 +97,22 @@ export default function ResetQuests({ title, subheader, list, fetchQuests, ...ot
         }
       />
 
-      {list.map((task) => (
-        <TaskItem
-          key={task.id}
-          task={task}
-          checked={selected.includes(task.id)}
-          onChange={() => handleClickComplete(task.id)}
-        />
-      ))}
+      {isLoading ? (
+        <Stack spacing={2}>
+          {[...new Array(10)].map((item, index) => (
+            <Skeleton key={index} animation="wave" variant="rounded" width="100%" height={50} />
+          ))}
+        </Stack>
+      ) : (
+        list.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            checked={selected.includes(task.id)}
+            onChange={() => handleClickComplete(task.id)}
+          />
+        ))
+      )}
     </Card>
   );
 }

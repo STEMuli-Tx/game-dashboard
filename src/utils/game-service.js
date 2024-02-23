@@ -47,4 +47,17 @@ export default class GameService {
 
     return response.data;
   }
+
+  async resetInventory() {
+    toast.info(`Cleaning Inventory...`, {
+      theme: 'colored',
+    });
+    const response = await this.api.post('/inventory/reset');
+
+    toast.success(`Cleaned out inventory!`, {
+      theme: 'colored',
+    });
+
+    return response.data;
+  }
 }

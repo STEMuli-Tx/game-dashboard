@@ -8,15 +8,15 @@ const icon = (name) => (
 
 const navConfig = [
   {
-    title: 'Quests',
+    title: 'Dashboard',
     path: '/',
     icon: icon('ic_analytics'),
   },
-  {
-    title: 'Inventory',
-    path: '/user',
-    icon: icon('ic_cart'),
-  },
+  // {
+  //   title: 'Inventory',
+  //   path: '/inventory',
+  //   icon: icon('ic_cart'),
+  // },
   // {
   //   title: 'product',
   //   path: '/products',

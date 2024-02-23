@@ -86,19 +86,25 @@ export default function LoginView() {
         </Select>
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
+      {/* <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
         <Link variant="subtitle2" underline="hover">
           Forgot password?
         </Link>
-      </Stack>
+      </Stack> */}
 
       <LoadingButton
         fullWidth
         size="large"
         type="submit"
         variant="contained"
-        color="inherit"
         onClick={handleClick}
+        sx={{
+          mt: 2, // This adds margin-top spacing. '2' is the theme spacing value, adjust as needed.
+          backgroundColor: '#B360F4', // This sets the button color to purple.
+          '&:hover': {
+            backgroundColor: '#a050e0', // Optional: darken the color slightly on hover, adjust as needed.
+          },
+        }}
       >
         Login
       </LoadingButton>
@@ -131,16 +137,16 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Sign in to Minimal</Typography>
+          <Typography variant="h4">Sign in to Stem City Dashboard</Typography>
 
-          <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
+          {/* <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
             Don’t have an account?
             <Link variant="subtitle2" sx={{ ml: 0.5 }}>
               Get started
             </Link>
-          </Typography>
+          </Typography> */}
 
-          <Stack direction="row" spacing={2}>
+          {/* <Stack direction="row" spacing={2}>
             <Button
               fullWidth
               size="large"
@@ -170,12 +176,12 @@ export default function LoginView() {
             >
               <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
             </Button>
-          </Stack>
+          </Stack> */}
 
           <Divider sx={{ my: 3 }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               OR
-            </Typography>
+            </Typography> */}
           </Divider>
 
           {renderForm}

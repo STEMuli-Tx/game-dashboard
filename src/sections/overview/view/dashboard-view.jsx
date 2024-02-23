@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-
+// import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import Button from '@mui/material/Button';
 import ResetQuests from '../reset-quests';
 import MarkQuestsComplete from '../mark-quests-complete';
-
+import ResetInventory from '../reset-inventory';
 import { useGameService } from '../../../context/gameServiceContext';
 
 // ----------------------------------------------------------------------
@@ -14,13 +15,14 @@ import { useGameService } from '../../../context/gameServiceContext';
 export default function AppView() {
   const { getQuests } = useGameService();
   const [quests, setQuests] = useState([]);
-  const [loading, isLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchQuests();
   }, []);
 
   const fetchQuests = async () => {
+    setLoading(true); // Set loading state to true (display loading spinner)
     try {
       const data = await getQuests(); // Fetch the quests
 
@@ -32,12 +34,14 @@ export default function AppView() {
           progress: quest.userQuest.progress,
         }))
       ); // Transform and set the quests data
+
+      setLoading(false); // Set loading state to false (hide loading spinner)
     } catch (error) {
       console.error('Failed to fetch quests:', error);
     }
   };
 
-  const handleReset = (id) => {
+  const handleResetInventory = (id) => {
     // handle reset action for the item with the given id
   };
 
@@ -53,6 +57,7 @@ export default function AppView() {
             fetchQuests={fetchQuests}
             title="🧨 Reset Quests"
             list={quests} // Pass the quests data to AppTasks
+            isLoading={loading}
           />
         </Grid>
 
@@ -61,7 +66,12 @@ export default function AppView() {
             fetchQuests={fetchQuests}
             title="✅ Mark Complete"
             list={quests} // Pass the quests data to AppTasks
+            isLoading={loading}
           />
+        </Grid>
+
+        <Grid xs={12} style={{ textAlign: 'center', marginTop: '20px' }}>
+          <ResetInventory />
         </Grid>
       </Grid>
     </Container>

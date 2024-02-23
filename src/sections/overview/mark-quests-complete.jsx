@@ -12,10 +12,18 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { useGameService } from 'src/context/gameServiceContext';
 import Iconify from 'src/components/iconify';
 import { Chip } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 
 // ----------------------------------------------------------------------
 
-export default function MarkQuestsComplete({ title, subheader, list, fetchQuests, ...other }) {
+export default function MarkQuestsComplete({
+  title,
+  subheader,
+  list,
+  fetchQuests,
+  isLoading,
+  ...other
+}) {
   const { markQuestsComplete } = useGameService();
   const [selected, setSelected] = useState([]);
 
@@ -85,14 +93,22 @@ export default function MarkQuestsComplete({ title, subheader, list, fetchQuests
         }
       />
 
-      {list.map((task) => (
-        <TaskItem
-          key={task.id}
-          task={task}
-          checked={selected.includes(task.id)}
-          onChange={() => handleClickComplete(task.id)}
-        />
-      ))}
+      {isLoading ? (
+        <Stack spacing={2}>
+          {[...new Array(10)].map((item, index) => (
+            <Skeleton key={index} animation="wave" variant="rounded" width="100%" height={50} />
+          ))}
+        </Stack>
+      ) : (
+        list.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            checked={selected.includes(task.id)}
+            onChange={() => handleClickComplete(task.id)}
+          />
+        ))
+      )}
     </Card>
   );
 }

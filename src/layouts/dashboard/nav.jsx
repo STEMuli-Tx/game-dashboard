@@ -30,7 +30,7 @@ import Cookies from 'js-cookie';
 export default function Nav({ openNav, onCloseNav }) {
   const { user } = useAuthContext();
   const pathname = usePathname();
-  console.log(user);
+
   const upLg = useResponsive('up', 'lg');
 
   useEffect(() => {
