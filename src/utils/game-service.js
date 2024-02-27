@@ -60,4 +60,17 @@ export default class GameService {
 
     return response.data;
   }
+
+  async syncQuest() {
+    toast.info(`Syncing quests...`, {
+      theme: 'colored',
+    });
+    const response = await this.api.delete('/user-roster');
+
+    toast.info(`Fetching all quests again, this may take some time...`, {
+      theme: 'colored',
+    });
+
+    return response.data;
+  }
 }

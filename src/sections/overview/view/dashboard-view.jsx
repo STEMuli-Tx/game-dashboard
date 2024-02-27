@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import ResetQuests from '../reset-quests';
 import MarkQuestsComplete from '../mark-quests-complete';
 import ResetInventory from '../reset-inventory';
+import SyncQuests from '../sync-quest';
 import { useGameService } from '../../../context/gameServiceContext';
 
 // ----------------------------------------------------------------------
@@ -41,10 +42,6 @@ export default function AppView() {
     }
   };
 
-  const handleResetInventory = (id) => {
-    // handle reset action for the item with the given id
-  };
-
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -68,6 +65,10 @@ export default function AppView() {
             list={quests} // Pass the quests data to AppTasks
             isLoading={loading}
           />
+        </Grid>
+
+        <Grid xs={12} style={{ textAlign: 'center', marginTop: '20px' }}>
+          <SyncQuests fetchQuests={fetchQuests} />
         </Grid>
 
         <Grid xs={12} style={{ textAlign: 'center', marginTop: '20px' }}>
