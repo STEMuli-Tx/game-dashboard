@@ -52,9 +52,22 @@ export const GameServiceProvider = ({ children }) => {
     return gameService.syncQuest();
   };
 
+  const resetPlayerLevelData = async () => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.resetPlayerLevelData();
+  };
+
   return (
     <GameServiceContext.Provider
-      value={{ getQuests, resetQuests, markQuestsComplete, resetInventory, syncQuest }}
+      value={{
+        getQuests,
+        resetQuests,
+        markQuestsComplete,
+        resetInventory,
+        syncQuest,
+        resetPlayerLevelData,
+      }}
     >
       {children}
     </GameServiceContext.Provider>

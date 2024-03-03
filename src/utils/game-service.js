@@ -73,4 +73,17 @@ export default class GameService {
 
     return response.data;
   }
+
+  async resetPlayerLevelData() {
+    toast.info(`Clearing Level Data`, {
+      theme: 'colored',
+    });
+    const response = await this.api.post('/inventory/reset-level');
+
+    toast.success(`Cleared Level Data`, {
+      theme: 'colored',
+    });
+
+    return response.data;
+  }
 }

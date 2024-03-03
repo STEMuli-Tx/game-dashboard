@@ -1,5 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useContext } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import { AuthContext } from 'src/context/authContext';
+import ProtectedRoute from 'src/routes/components/protected-route';
 
 import DashboardLayout from 'src/layouts/dashboard';
 
@@ -13,14 +15,18 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const { isLoggedIn } = useContext(AuthContext); // This line may not be necessary depending on your implementation
+
   const routes = useRoutes([
     {
       element: (
-        <DashboardLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+        <ProtectedRoute>
+          <DashboardLayout>
+            <Suspense>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        </ProtectedRoute>
       ),
       children: [
         { element: <IndexPage />, index: true },

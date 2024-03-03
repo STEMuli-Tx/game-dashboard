@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import ResetQuests from '../reset-quests';
 import MarkQuestsComplete from '../mark-quests-complete';
 import ResetInventory from '../reset-inventory';
+import ResetPlayerLevelData from '../reset-player-level-data';
 import SyncQuests from '../sync-quest';
 import { useGameService } from '../../../context/gameServiceContext';
 
@@ -67,12 +68,26 @@ export default function AppView() {
           />
         </Grid>
 
-        <Grid xs={12} style={{ textAlign: 'center', marginTop: '20px' }}>
-          <SyncQuests fetchQuests={fetchQuests} />
-        </Grid>
-
-        <Grid xs={12} style={{ textAlign: 'center', marginTop: '20px' }}>
-          <ResetInventory />
+        {/* Adjustments for SyncQuests, ResetInventory, and ResetPlayerLevelData */}
+        <Grid item container xs={12} spacing={3} style={{ textAlign: 'center', marginTop: '20px' }}>
+          <Grid item xs={4}>
+            <Typography variant="body2" style={{ marginBottom: '10px' }}>
+              Use this if your quests are not loading above!
+            </Typography>
+            <SyncQuests fetchQuests={fetchQuests} />
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="body2" style={{ marginBottom: '10px' }}>
+              Clears out the currently logged in player's inventory
+            </Typography>
+            <ResetInventory />
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="body2" style={{ marginBottom: '10px' }}>
+              Clears out the picked up items in the level so the player can pick them up again
+            </Typography>
+            <ResetPlayerLevelData />
+          </Grid>
         </Grid>
       </Grid>
     </Container>

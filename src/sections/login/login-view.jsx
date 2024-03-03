@@ -27,7 +27,7 @@ import { useAuthContext } from 'src/context/authContext';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
-  const { setUser } = useAuthContext();
+  const { setUser, setLoggedIn } = useAuthContext();
   const theme = useTheme();
 
   const router = useRouter();
@@ -43,6 +43,7 @@ export default function LoginView() {
     const response = await stemuliNavigator.signIn(tenant, email, password);
 
     if (response) {
+      setLoggedIn(true);
       setUser(response);
       router.push('/');
     }
