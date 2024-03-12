@@ -11,16 +11,20 @@ import ResetInventory from '../reset-inventory';
 import ResetPlayerLevelData from '../reset-player-level-data';
 import SyncQuests from '../sync-quest';
 import { useGameService } from '../../../context/gameServiceContext';
+import ResetRoamingNPC from '../reset-roaming-npc';
 
 // ----------------------------------------------------------------------
 
 export default function AppView() {
-  const { getQuests } = useGameService();
+  const { getQuests, getRoamingNPCs } = useGameService();
   const [quests, setQuests] = useState([]);
+  const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [roamingNPCLoading, setRoamingNPCLoading] = useState(true);
 
   useEffect(() => {
     fetchQuests();
+    fetchRoamingNPCs();
   }, []);
 
   const fetchQuests = async () => {
@@ -43,12 +47,31 @@ export default function AppView() {
     }
   };
 
+  const fetchRoamingNPCs = async () => {
+    setRoamingNPCLoading(true); // Set loading state to true (display loading spinner)
+    try {
+      const data = await getRoamingNPCs(); // Fetch the quests
+
+      setRoamingNPCs(
+        data.map((i) => ({
+          id: i._id,
+          gameObjectId: i.gameObjectId,
+        }))
+      ); // Transform and set the quests data
+
+      setRoamingNPCLoading(false); // Set loading state to false (hide loading spinner)
+    } catch (error) {
+      console.error('Failed to fetch roaming NPCs:', error);
+    }
+  };
+
   return (
     <Container maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        Hi, Welcome back! 👋
-      </Typography>
-
+      <Grid item xs={12}>
+        <Typography variant="h5" style={{ marginBottom: '20px' }}>
+          🗻 Quests
+        </Typography>
+      </Grid>
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={6} style={{ maxHeight: '500px', overflow: 'auto' }}>
           <ResetQuests
@@ -65,6 +88,20 @@ export default function AppView() {
             title="✅ Mark Complete"
             list={quests} // Pass the quests data to AppTasks
             isLoading={loading}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="h5" style={{ marginBottom: '20px' }}>
+            🦜 Roaming NPC
+          </Typography>
+        </Grid>
+        <Grid xs={12} sm={6} md={6} style={{ maxHeight: '500px', overflow: 'auto' }}>
+          <ResetRoamingNPC
+            fetchRoamingNPCs={fetchRoamingNPCs}
+            title="🧨 Reset Roaming NPC"
+            list={roamingNPCs} // Pass the quests data to AppTasks
+            isLoading={roamingNPCLoading}
           />
         </Grid>
 

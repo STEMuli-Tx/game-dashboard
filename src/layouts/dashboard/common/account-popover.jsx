@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import { account } from 'src/_mock/account';
 import Cookies from 'js-cookie';
 import { useRouter } from 'src/routes/hooks';
+import { AuthContext } from 'src/context/authContext';
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +21,7 @@ const MENU_OPTIONS = [];
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const { setLoggedIn } = useContext(AuthContext);
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -32,8 +34,9 @@ export default function AccountPopover() {
   };
 
   const handleLogout = () => {
-    console.log('Logout');
     Cookies.remove('access_token');
+    localStorage.setItem('isLoggedIn', false);
+    setLoggedIn(false);
     router.push('/login');
   };
 

@@ -86,4 +86,29 @@ export default class GameService {
 
     return response.data;
   }
+
+  async getRoamingNPCs() {
+    const response = await this.api.get('/roaming-npc');
+
+    return response.data.data;
+  }
+  async resetRoamingNPCs(ids) {
+    try {
+      toast.info(`Resetting Roaming NPC Dialog...`, {
+        theme: 'colored',
+      });
+      const response = await this.api.post('/roaming-npc/player/reset', { gameObjectIds: ids });
+
+      toast.success(`Reset Roaming NPCs`, {
+        theme: 'colored',
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Failed to reset roaming NPCs:', error);
+      toast.error(`Error Resetting`, {
+        theme: 'colored',
+      });
+    }
+  }
 }

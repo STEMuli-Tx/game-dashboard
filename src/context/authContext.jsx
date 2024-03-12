@@ -9,29 +9,32 @@ export function useAuthContext() {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(true);
   const [user, setUser] = useState(null);
   const router = useRouter();
+
   useEffect(() => {
     const token = Cookies.get('access_token');
-    if (token) {
-      setLoggedIn(true);
-      setUser({ name: Cookies.get('name'), email: Cookies.get('email') });
-      // If the user is trying to access login page while logged in, redirect to home
-      // if (router.pathname === '/login') {
-      //   router.push('/');
-      // }
-    }
 
-    // else {
-    //   setLoggedIn(false);
-    //   setUser(null);
-    //   // If not logged in and not on the login page, redirect to login
-    //   if (router.pathname !== '/login') {
-    //     router.push('/login');
-    //   }
-    // }
-  }, [router]);
+    // Attempt to retrieve the token and user information from cookies
+
+    if (token) {
+      localStorage.setItem('isLoggedIn', true);
+      const userInfo = { name: Cookies.get('name'), email: Cookies.get('email') };
+      localStorage.setItem('user', JSON.stringify(userInfo));
+      setLoggedIn(true);
+      setUser(userInfo);
+    } else {
+      setLoggedIn(false);
+      setUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Update local storage whenever isLoggedIn or user changes
+    localStorage.setItem('isLoggedIn', isLoggedIn);
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [isLoggedIn, user]);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, setUser, user }}>

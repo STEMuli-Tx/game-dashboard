@@ -58,6 +58,18 @@ export const GameServiceProvider = ({ children }) => {
     return gameService.resetPlayerLevelData();
   };
 
+  const getRoamingNPCs = async () => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.getRoamingNPCs();
+  };
+
+  const resetRoamingNPCs = async (ids) => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.resetRoamingNPCs(ids);
+  };
+
   return (
     <GameServiceContext.Provider
       value={{
@@ -67,6 +79,8 @@ export const GameServiceProvider = ({ children }) => {
         resetInventory,
         syncQuest,
         resetPlayerLevelData,
+        getRoamingNPCs,
+        resetRoamingNPCs,
       }}
     >
       {children}

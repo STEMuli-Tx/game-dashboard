@@ -2,6 +2,7 @@ import { lazy, Suspense, useContext } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import { AuthContext } from 'src/context/authContext';
 import ProtectedRoute from 'src/routes/components/protected-route';
+import PublicRoute from 'src/routes/components/public-route';
 
 import DashboardLayout from 'src/layouts/dashboard';
 
@@ -20,9 +21,9 @@ export default function Router() {
   const routes = useRoutes([
     {
       element: (
-        <ProtectedRoute>
+        <ProtectedRoute isLoggedIn={isLoggedIn}>
           <DashboardLayout>
-            <Suspense>
+            <Suspense fallback={<div>Loading...</div>}>
               <Outlet />
             </Suspense>
           </DashboardLayout>
@@ -37,7 +38,13 @@ export default function Router() {
     },
     {
       path: 'login',
-      element: <LoginPage />,
+      element: (
+        <PublicRoute>
+          <Suspense fallback={<div>Loading...</div>}>
+            <LoginPage />
+          </Suspense>
+        </PublicRoute>
+      ),
     },
     {
       path: '404',
