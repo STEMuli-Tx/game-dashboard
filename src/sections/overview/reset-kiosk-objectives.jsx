@@ -3,13 +3,12 @@ import Button from '@mui/material/Button';
 import { useGameService } from '../../context/gameServiceContext';
 import PropTypes from 'prop-types';
 
-export default function SyncQuests({ fetchQuests }) {
-  const { syncQuest } = useGameService();
+export default function MarkKioskObjectivesComplete() {
+  const { markKioskObjectivesComplete } = useGameService();
 
-  const handleQuestSync = async () => {
+  const handleClick = async () => {
     // handle reset action for the item with the given id
-    await syncQuest();
-    fetchQuests();
+    await markKioskObjectivesComplete();
   };
 
   return (
@@ -17,12 +16,10 @@ export default function SyncQuests({ fetchQuests }) {
       variant="contained"
       color="primary" // MUI v5 color prop supports 'error' for red
       // startIcon={<DeleteForeverIcon />}
-      onClick={handleQuestSync}
+      onClick={handleClick}
     >
-      Sync Quests
+      Mark LTI Objectives Complete
     </Button>
   );
 }
-SyncQuests.propTypes = {
-  fetchQuests: PropTypes.func,
-};
+MarkKioskObjectivesComplete.propTypes = {};

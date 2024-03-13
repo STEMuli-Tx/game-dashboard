@@ -9,7 +9,7 @@ import ResetQuests from '../reset-quests';
 import MarkQuestsComplete from '../mark-quests-complete';
 import ResetInventory from '../reset-inventory';
 import ResetPlayerLevelData from '../reset-player-level-data';
-import SyncQuests from '../sync-quest';
+import MarkKioskObjectivesComplete from '../reset-kiosk-objectives';
 import { useGameService } from '../../../context/gameServiceContext';
 import ResetRoamingNPC from '../reset-roaming-npc';
 import AddAllInventoryItems from '../add-all-inventory-items';
@@ -110,9 +110,9 @@ export default function AppView() {
         <Grid item container xs={12} spacing={3} style={{ textAlign: 'center', marginTop: '20px' }}>
           <Grid item xs={4}>
             <Typography variant="body2" style={{ marginBottom: '10px' }}>
-              Use this if your quests are not loading above!
+              Use this to bypass kiosk objectives
             </Typography>
-            <SyncQuests fetchQuests={fetchQuests} />
+            <MarkKioskObjectivesComplete />
           </Grid>
           <Grid item xs={4}>
             <Typography variant="body2" style={{ marginBottom: '10px' }}>

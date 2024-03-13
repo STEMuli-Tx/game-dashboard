@@ -28,6 +28,12 @@ export const GameServiceProvider = ({ children }) => {
     return gameService.getQuests();
   };
 
+  const markKioskObjectivesComplete = async () => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.markKioskObjectivesComplete();
+  };
+
   const resetQuests = async (questIds) => {
     // Optionally initialize anything else here
     const gameService = new GameService(token);
@@ -88,6 +94,7 @@ export const GameServiceProvider = ({ children }) => {
         getRoamingNPCs,
         resetRoamingNPCs,
         addAllInventoryItems,
+        markKioskObjectivesComplete,
       }}
     >
       {children}

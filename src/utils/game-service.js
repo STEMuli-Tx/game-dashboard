@@ -48,6 +48,24 @@ export default class GameService {
     return response.data;
   }
 
+  async markKioskObjectivesComplete() {
+    try {
+      toast.info(`Marking Kiosk Objectives Complete`, {
+        theme: 'colored',
+      });
+      const response = await this.api.post('/user-objective/complete/kiosk');
+
+      toast.success(`Done marking objectives Complete!`, {
+        theme: 'colored',
+      });
+
+      return response.data;
+    } catch (e) {
+      toast.error(`Error marking objectives`, {
+        theme: 'colored',
+      });
+    }
+  }
   async resetInventory() {
     toast.info(`Cleaning Inventory...`, {
       theme: 'colored',
