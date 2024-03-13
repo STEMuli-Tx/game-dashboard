@@ -52,7 +52,7 @@ export default class GameService {
     toast.info(`Cleaning Inventory...`, {
       theme: 'colored',
     });
-    const response = await this.api.post('/inventory/reset');
+    const response = await this.api.delete('/user-level/items/hard-delete');
 
     toast.success(`Cleaned out inventory!`, {
       theme: 'colored',
