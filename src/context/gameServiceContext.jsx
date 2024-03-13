@@ -46,6 +46,12 @@ export const GameServiceProvider = ({ children }) => {
     return gameService.resetInventory();
   };
 
+  const addAllInventoryItems = async () => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.addAllInventoryItems();
+  };
+
   const syncQuest = async () => {
     // Optionally initialize anything else here
     const gameService = new GameService(token);
@@ -81,6 +87,7 @@ export const GameServiceProvider = ({ children }) => {
         resetPlayerLevelData,
         getRoamingNPCs,
         resetRoamingNPCs,
+        addAllInventoryItems,
       }}
     >
       {children}

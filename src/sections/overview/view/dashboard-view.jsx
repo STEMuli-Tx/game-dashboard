@@ -12,6 +12,7 @@ import ResetPlayerLevelData from '../reset-player-level-data';
 import SyncQuests from '../sync-quest';
 import { useGameService } from '../../../context/gameServiceContext';
 import ResetRoamingNPC from '../reset-roaming-npc';
+import AddAllInventoryItems from '../add-all-inventory-items';
 
 // ----------------------------------------------------------------------
 
@@ -113,6 +114,13 @@ export default function AppView() {
             </Typography>
             <SyncQuests fetchQuests={fetchQuests} />
           </Grid>
+          <Grid item xs={4}>
+            <Typography variant="body2" style={{ marginBottom: '10px' }}>
+              Add all Inventory Items to Player
+            </Typography>
+            <AddAllInventoryItems />
+          </Grid>
+
           <Grid item xs={4}>
             <Typography variant="body2" style={{ marginBottom: '10px' }}>
               Clears out the currently logged in player's inventory

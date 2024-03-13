@@ -61,6 +61,15 @@ export default class GameService {
     return response.data;
   }
 
+  async addAllInventoryItems() {
+    toast.info(`Job started to add all items, this may take a few moments...`, {
+      theme: 'colored',
+    });
+    const response = await this.api.post('/inventory/add-all-items');
+
+    return response.data;
+  }
+
   async syncQuest() {
     toast.info(`Syncing quests...`, {
       theme: 'colored',
