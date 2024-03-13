@@ -87,7 +87,7 @@ export default class GameService {
     toast.info(`Clearing Level Data`, {
       theme: 'colored',
     });
-    const response = await this.api.post('/inventory/reset-level');
+    const response = await this.api.delete('/user-level/items/hard-delete');
 
     toast.success(`Cleared Level Data`, {
       theme: 'colored',
