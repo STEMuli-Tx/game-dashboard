@@ -13,7 +13,6 @@ export default function LearningManagementPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log('Fetching students');
     fetchStudents();
   }, []);
 
@@ -40,11 +39,17 @@ export default function LearningManagementPage() {
 
     try {
       await markLearningObjectivesComplete(submissionData);
+      resetForm();
       // Handle success response
     } catch (error) {
       console.error('Submission failed:', error);
       // Handle error response
     }
+  };
+
+  const resetForm = () => {
+    setSelectedUsers([]);
+    setSelectedActivities([]);
   };
 
   return (
@@ -58,6 +63,7 @@ export default function LearningManagementPage() {
           multiple
           id="users-autocomplete"
           options={students}
+          value={selectedUsers}
           getOptionLabel={(option) => option.firstName + ' ' + option.lastName}
           onChange={(event, newValue) => {
             setSelectedUsers(newValue);
@@ -75,6 +81,7 @@ export default function LearningManagementPage() {
           multiple
           id="activities-autocomplete"
           options={activities}
+          value={selectedActivities}
           getOptionLabel={(option) => option.title}
           onChange={(event, newValue) => {
             setSelectedActivities(newValue);

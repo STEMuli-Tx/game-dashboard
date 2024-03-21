@@ -168,6 +168,10 @@ export default class GameService {
     try {
       const response = await this.api.post('/user-objective/kiosk/complete', data);
 
+      toast.success(`🎮 Marked Learning Objectives Complete in game!`, {
+        theme: 'colored',
+      });
+
       return response.data;
     } catch (error) {
       console.error('Failed to load activity details:', error);
