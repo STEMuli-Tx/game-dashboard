@@ -56,14 +56,14 @@ export default function AccountPopover() {
       >
         <Avatar
           src={account.photoURL}
-          alt={Cookies.get('name')}
+          alt={user.name}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {Cookies.get('name').charAt(0).toUpperCase()}
+          {user.name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
