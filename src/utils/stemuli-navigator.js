@@ -35,9 +35,16 @@ export default class StemuliNavigator {
       grant_type: 'credential',
     });
 
-    Cookies.set('access_token', response.data.access_token, { expires: 1 });
-    Cookies.set('name', `${response.data.first_name} ${response.data.last_name}`, { expires: 1 });
-    Cookies.set('email', response.data.email, { expires: 1 });
+    localStorage.setItem('access_token', response.data.access_token, { expires: 1 });
+
+    return response.data;
+  }
+
+  async getTokenDetails() {
+    this.api.defaults.headers.common.Authorization = `Token ${localStorage.getItem(
+      'access_token'
+    )}`;
+    const response = await this.api.get('/nucleus-auth/v2/token', {});
 
     return response.data;
   }

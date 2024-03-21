@@ -21,7 +21,7 @@ const MENU_OPTIONS = [];
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-  const { setLoggedIn } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -34,9 +34,9 @@ export default function AccountPopover() {
   };
 
   const handleLogout = () => {
-    Cookies.remove('access_token');
-    localStorage.setItem('isLoggedIn', false);
-    setLoggedIn(false);
+    localStorage.removeItem('access_token');
+
+    logout();
     router.push('/login');
   };
 
@@ -84,10 +84,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {Cookies.get('name')}
+            {user.name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {Cookies.get('email')}
+            {user.email}
           </Typography>
         </Box>
 

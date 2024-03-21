@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -23,11 +23,11 @@ import { bgGradient } from 'src/theme/css';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 import StemuliNavigator from 'src/utils/stemuli-navigator';
-import { useAuthContext } from 'src/context/authContext';
+import { AuthContext } from 'src/context/authContext';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
-  const { setUser, setLoggedIn } = useAuthContext();
+  const { signIn, getUser } = useContext(AuthContext);
   const theme = useTheme();
 
   const router = useRouter();
@@ -40,12 +40,13 @@ export default function LoginView() {
   const stemuliNavigator = new StemuliNavigator();
 
   const handleClick = async () => {
-    const response = await stemuliNavigator.signIn(tenant, email, password);
+    const user = await signIn(tenant, email, password);
+    console.log(user);
+    if (user) {
+      const userType = user.userType;
 
-    if (response) {
-      setLoggedIn(true);
-      setUser(response);
-      router.push('/');
+      if (userType === 'teacher') router.push('/learning-management');
+      else router.push('/');
     }
   };
 

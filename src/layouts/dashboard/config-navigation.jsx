@@ -1,42 +1,32 @@
+import React from 'react';
 import SvgColor from 'src/components/svg-color';
 
-// ----------------------------------------------------------------------
-
+// Function to generate icon component
 const icon = (name) => (
   <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
 );
 
-const navConfig = [
-  {
-    title: 'Dashboard',
-    path: '/',
-    icon: icon('ic_analytics'),
-  },
-  // {
-  //   title: 'Inventory',
-  //   path: '/inventory',
-  //   icon: icon('ic_cart'),
-  // },
-  // {
-  //   title: 'product',
-  //   path: '/products',
-  //   icon: icon('ic_cart'),
-  // },
-  // {
-  //   title: 'blog',
-  //   path: '/blog',
-  //   icon: icon('ic_blog'),
-  // },
-  // {
-  //   title: 'login',
-  //   path: '/login',
-  //   icon: icon('ic_lock'),
-  // },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: icon('ic_disabled'),
-  // },
-];
+// Original navConfig array is removed in favor of a function that returns dynamic configuration
 
-export default navConfig;
+export const getNavConfig = (userType) => {
+  switch (userType) {
+    case 'student':
+      return [
+        {
+          title: 'Dashboard',
+          path: '/',
+          icon: icon('ic_analytics'),
+        },
+      ];
+    case 'teacher':
+      return [
+        {
+          title: 'Learning Management',
+          path: '/learning-management',
+          icon: icon('ic_cart'),
+        },
+      ];
+    default:
+      return []; // Empty or some default navigation for other user types or guests
+  }
+};

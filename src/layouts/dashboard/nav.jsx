@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
@@ -21,14 +21,14 @@ import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 
 import { NAV } from './config-layout';
-import navConfig from './config-navigation';
-import { useAuthContext } from 'src/context/authContext';
+import { getNavConfig } from './config-navigation';
+import { AuthContext } from 'src/context/authContext';
 import Cookies from 'js-cookie';
 
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav }) {
-  const { user } = useAuthContext();
+  const { user } = useContext(AuthContext);
   const pathname = usePathname();
 
   const upLg = useResponsive('up', 'lg');
@@ -39,6 +39,9 @@ export default function Nav({ openNav, onCloseNav }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  // Now dynamically get the navConfig based on user type
+  const dynamicNavConfig = getNavConfig(user ? user.userType : null);
 
   const renderAccount = (
     <Box
@@ -56,7 +59,7 @@ export default function Nav({ openNav, onCloseNav }) {
       <Avatar src={account.photoURL} alt="photoURL" />
 
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">{Cookies.get('name')}</Typography>
+        <Typography variant="subtitle2">{user.name}</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {account.role}
@@ -67,7 +70,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
+      {dynamicNavConfig.map((item) => (
         <NavItem key={item.title} item={item} />
       ))}
     </Stack>

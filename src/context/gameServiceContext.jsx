@@ -14,10 +14,10 @@ export const GameServiceProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const token = Cookies.get('access_token');
+    const token = localStorage.getItem('access_token');
     // Optionally verify the token's validity with your backend here
     if (token) {
-      const accessToken = Cookies.get('access_token');
+      const accessToken = localStorage.getItem('access_token');
       setToken(accessToken);
     }
   }, [router]);
@@ -82,6 +82,24 @@ export const GameServiceProvider = ({ children }) => {
     return gameService.resetRoamingNPCs(ids);
   };
 
+  const getStudents = async () => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.getStudents();
+  };
+
+  const getNavigatorObjectiveDetails = async () => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.getNavigatorObjectiveDetails();
+  };
+
+  const markLearningObjectivesComplete = async (data) => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.markLearningObjectivesComplete(data);
+  };
+
   return (
     <GameServiceContext.Provider
       value={{
@@ -95,6 +113,9 @@ export const GameServiceProvider = ({ children }) => {
         resetRoamingNPCs,
         addAllInventoryItems,
         markKioskObjectivesComplete,
+        getStudents,
+        getNavigatorObjectiveDetails,
+        markLearningObjectivesComplete,
       }}
     >
       {children}

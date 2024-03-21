@@ -138,4 +138,42 @@ export default class GameService {
       });
     }
   }
+
+  async getStudents() {
+    try {
+      const response = await this.api.get('/student?perPage=300&sort={"firstName":1}');
+
+      return response.data;
+    } catch (error) {
+      toast.error(`Error getting students`, {
+        theme: 'colored',
+      });
+    }
+  }
+
+  async getNavigatorObjectiveDetails() {
+    try {
+      const response = await this.api.get('/navigator-objective-detail?perPage=300');
+
+      return response.data;
+    } catch (error) {
+      console.error('Failed to load activity details:', error);
+      toast.error(`Failed to load activity details:`, {
+        theme: 'colored',
+      });
+    }
+  }
+
+  async markLearningObjectivesComplete(data) {
+    try {
+      const response = await this.api.post('/user-objective/kiosk/complete', data);
+
+      return response.data;
+    } catch (error) {
+      console.error('Failed to load activity details:', error);
+      toast.error(`Failed to load activity details:`, {
+        theme: 'colored',
+      });
+    }
+  }
 }

@@ -4,9 +4,9 @@ import { AuthContext } from 'src/context/authContext';
 
 // Custom component to protect the login route
 const PublicRoute = ({ children }) => {
-  const { isLoggedIn } = useContext(AuthContext);
-  console.log('PublicRoute isLoggedIn: ', isLoggedIn);
-  if (isLoggedIn) {
+  const { user } = useContext(AuthContext);
+
+  if (user) {
     // User is logged in, redirect them to the index page
     return <Navigate to="/" replace />;
   }

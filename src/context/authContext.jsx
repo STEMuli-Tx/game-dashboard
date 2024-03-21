@@ -1,46 +1,77 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import { useRouter } from 'src/routes/hooks';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+import StemuliNavigator from 'src/utils/stemuli-navigator';
+
+const stemuliNavigator = new StemuliNavigator();
 
 export const AuthContext = createContext(null);
 
-export function useAuthContext() {
-  return useContext(AuthContext);
-}
-
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setLoggedIn] = useState(true);
   const [user, setUser] = useState(null);
-  const router = useRouter();
 
   useEffect(() => {
-    const token = Cookies.get('access_token');
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    // Optionally, verify the token's validity with your backend here
 
-    // Attempt to retrieve the token and user information from cookies
-
-    if (token) {
-      localStorage.setItem('isLoggedIn', true);
-      const userInfo = { name: Cookies.get('name'), email: Cookies.get('email') };
-      localStorage.setItem('user', JSON.stringify(userInfo));
-      setLoggedIn(true);
-      setUser(userInfo);
-    } else {
-      setLoggedIn(false);
-      setUser(null);
+    if (isLoggedIn) {
+      setUserDetails();
+      // Set user state based on persisted data. This might include fetching user details
+      // again or storing user details in localStorage as well.
+      // setUser({
+      //   /* user details */
+      // });
     }
   }, []);
 
-  useEffect(() => {
-    // Update local storage whenever isLoggedIn or user changes
-    localStorage.setItem('isLoggedIn', isLoggedIn);
-    localStorage.setItem('user', JSON.stringify(user));
-  }, [isLoggedIn, user]);
+  const setUserDetails = async () => {
+    const response = await stemuliNavigator.getTokenDetails();
+    setUser({
+      name: `${response.first_name} ${response.last_name}`,
+      email: response.email,
+      userType: response.user_category,
+    });
+  };
+
+  // Sign in function to update the user state
+  const signIn = async (tenant, email, password) => {
+    // Assuming signIn method is available and returns user details upon successful authentication
+    const userData = await stemuliNavigator.signIn(tenant, email, password);
+
+    if (userData) {
+      setUser({
+        name: `${userData.first_name} ${userData.last_name}`,
+        email: userData.email,
+        userType: userData.user_category,
+      });
+      // Set the access_token in a secure, HttpOnly cookie if using cookies for token management
+
+      localStorage.setItem('isLoggedIn', 'true');
+
+      return {
+        name: `${userData.first_name} ${userData.last_name}`,
+        email: userData.email,
+        userType: userData.user_category,
+      };
+    }
+  };
+
+  // Logout function to clear user state
+  const logout = () => {
+    setUser(null);
+    // Additional logout logic (e.g., clearing tokens)
+  };
+
+  const getUser = () => {
+    return user;
+    // Additional logout logic (e.g., clearing tokens)
+  };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, setUser, user }}>
+    <AuthContext.Provider value={{ user, signIn, logout, getUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+// Custom hook to use the auth context
 export const useAuth = () => useContext(AuthContext);
