@@ -94,7 +94,7 @@ export default function LearningManagementPage() {
               placeholder="Select Activities"
             />
           )}
-          sx={{ width: 300 }}
+          sx={{ width: 800 }}
         />
       </Box>
 
