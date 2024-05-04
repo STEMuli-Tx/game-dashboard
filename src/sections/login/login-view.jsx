@@ -35,13 +35,13 @@ export default function LoginView() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [tenant, setTenant] = useState('REACH');
+  const [tenant, setTenant] = useState('STRIDE');
 
   const stemuliNavigator = new StemuliNavigator();
 
   const handleClick = async () => {
     const user = await signIn(tenant, email, password);
-    console.log(user);
+
     if (user) {
       const userType = user.userType;
 

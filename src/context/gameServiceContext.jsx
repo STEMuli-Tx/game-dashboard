@@ -14,12 +14,26 @@ export const GameServiceProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
+    const handleStorageChange = (e) => {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        setToken(token);
+      }
+    };
+
+    // Get the initial token value
     const token = localStorage.getItem('access_token');
-    // Optionally verify the token's validity with your backend here
     if (token) {
-      const accessToken = localStorage.getItem('access_token');
-      setToken(accessToken);
+      setToken(token);
     }
+
+    // Listen for changes in localStorage
+    window.addEventListener('storage', handleStorageChange);
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [router]);
 
   const getQuests = async () => {
@@ -70,6 +84,12 @@ export const GameServiceProvider = ({ children }) => {
     return gameService.resetPlayerLevelData();
   };
 
+  const deleteTitlePlayer = async () => {
+    // Optionally initialize anything else here
+    const gameService = new GameService(token);
+    return gameService.deleteTitlePlayer();
+  };
+
   const getRoamingNPCs = async () => {
     // Optionally initialize anything else here
     const gameService = new GameService(token);
@@ -116,6 +136,7 @@ export const GameServiceProvider = ({ children }) => {
         getStudents,
         getNavigatorObjectiveDetails,
         markLearningObjectivesComplete,
+        deleteTitlePlayer,
       }}
     >
       {children}

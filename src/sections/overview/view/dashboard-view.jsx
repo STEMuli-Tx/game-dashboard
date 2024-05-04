@@ -13,6 +13,7 @@ import MarkKioskObjectivesComplete from '../reset-kiosk-objectives';
 import { useGameService } from '../../../context/gameServiceContext';
 import ResetRoamingNPC from '../reset-roaming-npc';
 import AddAllInventoryItems from '../add-all-inventory-items';
+import DeleteTitlePlayer from '../delete-player';
 
 // ----------------------------------------------------------------------
 
@@ -110,12 +111,6 @@ export default function AppView() {
         <Grid item container xs={12} spacing={3} style={{ textAlign: 'center', marginTop: '20px' }}>
           <Grid item xs={4}>
             <Typography variant="body2" style={{ marginBottom: '10px' }}>
-              Use this to bypass kiosk objectives
-            </Typography>
-            <MarkKioskObjectivesComplete />
-          </Grid>
-          <Grid item xs={4}>
-            <Typography variant="body2" style={{ marginBottom: '10px' }}>
               Add all Inventory Items to Player
             </Typography>
             <AddAllInventoryItems />
@@ -123,9 +118,9 @@ export default function AppView() {
 
           <Grid item xs={4}>
             <Typography variant="body2" style={{ marginBottom: '10px' }}>
-              Clears out the currently logged in player's inventory
+              Delete Player Title from Playfab
             </Typography>
-            <ResetInventory />
+            <DeleteTitlePlayer />
           </Grid>
           <Grid item xs={4}>
             <Typography variant="body2" style={{ marginBottom: '10px' }}>

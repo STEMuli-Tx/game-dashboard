@@ -10,17 +10,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     // Optionally, verify the token's validity with your backend here
 
-    if (isLoggedIn) {
-      setUserDetails();
-      // Set user state based on persisted data. This might include fetching user details
-      // again or storing user details in localStorage as well.
-      // setUser({
-      //   /* user details */
-      // });
-    }
+    setUserDetails();
+    // Set user state based on persisted data. This might include fetching user details
+    // again or storing user details in localStorage as well.
+    // setUser({
+    //   /* user details */
+    // });
   }, []);
 
   const setUserDetails = async () => {
@@ -46,6 +43,7 @@ export const AuthProvider = ({ children }) => {
       // Set the access_token in a secure, HttpOnly cookie if using cookies for token management
 
       localStorage.setItem('isLoggedIn', 'true');
+      setUserDetails();
 
       return {
         name: `${userData.first_name} ${userData.last_name}`,
@@ -58,6 +56,7 @@ export const AuthProvider = ({ children }) => {
   // Logout function to clear user state
   const logout = () => {
     setUser(null);
+    localStorage.setItem('isLoggedIn', 'false');
     // Additional logout logic (e.g., clearing tokens)
   };
 

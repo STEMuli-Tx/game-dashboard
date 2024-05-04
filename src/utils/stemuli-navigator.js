@@ -35,10 +35,15 @@ export default class StemuliNavigator {
       grant_type: 'credential',
     });
 
-    localStorage.setItem('access_token', response.data.access_token, { expires: 1 });
+    this.handleLocalStorage(response);
 
     return response.data;
   }
+
+  handleLocalStorage = (response) => {
+    window.localStorage.setItem('access_token', response.data.access_token, { expires: 1 });
+    window.dispatchEvent(new Event('storage'));
+  };
 
   async getTokenDetails() {
     this.api.defaults.headers.common.Authorization = `Token ${localStorage.getItem(

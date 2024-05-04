@@ -79,6 +79,19 @@ export default class GameService {
     return response.data;
   }
 
+  async deleteTitlePlayer() {
+    toast.info(`Deleting Title Player`, {
+      theme: 'colored',
+    });
+    const response = await this.api.post('/player/delete-title-player');
+
+    toast.success(`Deleted Player!`, {
+      theme: 'colored',
+    });
+
+    return response.data;
+  }
+
   async addAllInventoryItems() {
     toast.info(`Job started to add all items, this may take a few moments...`, {
       theme: 'colored',
