@@ -11,6 +11,7 @@ export const BlogPage = lazy(() => import('src/pages/blog'));
 export const InventoryPage = lazy(() => import('src/pages/inventory'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
+export const HeatMapPage = lazy(() => import('src/pages/heatmap'));
 export const LearningManagementPage = lazy(() => import('src/pages/learning-management'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
@@ -32,6 +33,7 @@ export default function Router() {
       ),
       children: [
         { element: <IndexPage />, index: true },
+        { path: 'heatmap', element: <HeatMapPage /> },
         { path: 'learning-management', element: <LearningManagementPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
