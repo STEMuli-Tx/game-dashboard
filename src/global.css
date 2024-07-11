@@ -17,6 +17,10 @@
   width: 100%;
   height: 100%; /* This ensures overlay matches the background size */
   object-fit: cover; /* Adjusts the size of the image, to cover the area of the container */
+
+  border: 5px solid #000; /* Black border */
+  box-sizing: border-box; /* Include border in the element's total width and height */
+
 }
 
 .overlay-image {
