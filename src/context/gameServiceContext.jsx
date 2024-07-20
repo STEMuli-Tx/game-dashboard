@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import GameService from '../utils/game-service';
-import Cookies from 'js-cookie';
+import React, { useState, useEffect, useContext, createContext } from 'react';
+
 import { useRouter } from 'src/routes/hooks';
+
+import GameService from '../utils/game-service';
 
 const GameServiceContext = createContext();
 
@@ -12,19 +13,20 @@ export function useGameService() {
 export const GameServiceProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
-
+  const [gameService, setGameService] = useState(null);
+  const [environment, setEnvironment] = useState('https://service-stm.stardevs.xyz/v1'); // Default environment
+  const [isReady, setIsReady] = useState(false); // New loading state
   useEffect(() => {
     const handleStorageChange = (e) => {
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        setToken(token);
+      const localToken = localStorage.getItem('access_token');
+      if (localToken) {
+        setToken(localToken);
       }
     };
 
-    // Get the initial token value
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      setToken(token);
+    const localToken = localStorage.getItem('access_token');
+    if (localToken) {
+      setToken(localToken);
     }
 
     // Listen for changes in localStorage
@@ -35,94 +37,54 @@ export const GameServiceProvider = ({ children }) => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, [router]);
+  useEffect(() => {
+    console.log('Current environment in context::::::', environment);
+    if (token && !gameService) {
+      setGameService(new GameService(token, environment));
+      setIsReady(true); // Set isReady to true when gameService is initialized
+    } else if (gameService) {
+      gameService.setBaseURL(environment);
+      console.log('Updating state environment', environment);
+      setEnvironment(environment);
+    }
+  }, [token, environment, gameService]);
 
-  const getQuests = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.getQuests();
-  };
+  const getQuests = async () => gameService.getQuests();
 
-  const markKioskObjectivesComplete = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.markKioskObjectivesComplete();
-  };
+  const markKioskObjectivesComplete = async () => gameService.markKioskObjectivesComplete();
 
-  const resetQuests = async (questIds) => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.resetQuests(questIds);
-  };
+  const resetQuests = async (questIds) => gameService.resetQuests(questIds);
 
-  const markQuestsComplete = async (questIds) => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.markQuestsComplete(questIds);
-  };
+  const markQuestsComplete = async (questIds) => gameService.markQuestsComplete(questIds);
 
-  const resetInventory = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.resetInventory();
-  };
+  const resetInventory = async () => gameService.resetInventory();
 
-  const addAllInventoryItems = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.addAllInventoryItems();
-  };
+  const addAllInventoryItems = async () => gameService.addAllInventoryItems();
 
-  const syncQuest = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.syncQuest();
-  };
+  const syncQuest = async () => gameService.syncQuest();
 
-  const resetPlayerLevelData = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.resetPlayerLevelData();
-  };
+  const resetPlayerLevelData = async () => gameService.resetPlayerLevelData();
 
-  const deleteTitlePlayer = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.deleteTitlePlayer();
-  };
+  const deleteTitlePlayer = async () => gameService.deleteTitlePlayer();
 
-  const getRoamingNPCs = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.getRoamingNPCs();
-  };
+  const getRoamingNPCs = async () => gameService.getRoamingNPCs();
 
-  const resetRoamingNPCs = async (ids) => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.resetRoamingNPCs(ids);
-  };
+  const resetRoamingNPCs = async (ids) => gameService.resetRoamingNPCs(ids);
 
-  const getStudents = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.getStudents();
-  };
+  const getStudents = async () => gameService.getStudents();
 
-  const getNavigatorObjectiveDetails = async () => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.getNavigatorObjectiveDetails();
-  };
+  const getNavigatorObjectiveDetails = async () => gameService.getNavigatorObjectiveDetails();
 
-  const markLearningObjectivesComplete = async (data) => {
-    // Optionally initialize anything else here
-    const gameService = new GameService(token);
-    return gameService.markLearningObjectivesComplete(data);
-  };
+  const markLearningObjectivesComplete = async (data) =>
+    gameService.markLearningObjectivesComplete(data);
 
   return (
     <GameServiceContext.Provider
       value={{
+        setEnvironment,
+        environment,
+        gameService,
+        isReady,
         getQuests,
         resetQuests,
         markQuestsComplete,

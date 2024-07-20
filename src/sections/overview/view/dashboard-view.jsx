@@ -14,34 +14,49 @@ import { useGameService } from '../../../context/gameServiceContext';
 import ResetRoamingNPC from '../reset-roaming-npc';
 import AddAllInventoryItems from '../add-all-inventory-items';
 import DeleteTitlePlayer from '../delete-player';
+import EnvironmentDropdown from '../environment-dropdown';
 
 // ----------------------------------------------------------------------
 
 export default function AppView() {
-  const { getQuests, getRoamingNPCs } = useGameService();
+  const { getQuests, getRoamingNPCs, gameService, isReady, environment } = useGameService();
   const [quests, setQuests] = useState([]);
   const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roamingNPCLoading, setRoamingNPCLoading] = useState(true);
 
   useEffect(() => {
-    fetchQuests();
-    fetchRoamingNPCs();
-  }, []);
+    if (isReady) {
+      console.log('From dash-board view fetching quests with', environment);
+      fetchQuests();
+      fetchRoamingNPCs();
+      // Call other functions that depend on gameService being initialized
+    }
+  }, [isReady, environment]);
 
   const fetchQuests = async () => {
     setLoading(true); // Set loading state to true (display loading spinner)
     try {
       const data = await getQuests(); // Fetch the quests
 
-      setQuests(
-        data.map((quest) => ({
-          id: quest._id,
-          name: quest.title,
-          status: quest.userQuest.status,
-          progress: quest.userQuest.progress,
-        }))
-      ); // Transform and set the quests data
+      if (Array.isArray(data))
+        setQuests(
+          data.map((quest) => ({
+            id: quest._id,
+            name: quest.title,
+            status: quest.userQuest.status,
+            progress: quest.userQuest.progress,
+          }))
+        );
+      else
+        setQuests(
+          data.data.map((quest) => ({
+            id: quest._id,
+            name: quest.title,
+            status: quest.userQuest.status,
+            progress: quest.userQuest.progress,
+          }))
+        );
 
       setLoading(false); // Set loading state to false (hide loading spinner)
     } catch (error) {
@@ -69,6 +84,9 @@ export default function AppView() {
 
   return (
     <Container maxWidth="xl">
+      <Grid item xs={12}>
+        <EnvironmentDropdown />
+      </Grid>
       <Grid item xs={12}>
         <Typography variant="h5" style={{ marginBottom: '20px' }}>
           🗻 Quests

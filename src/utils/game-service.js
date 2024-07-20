@@ -1,24 +1,36 @@
 import axios from 'axios';
 
 import { toast } from 'react-toastify';
+
 export default class GameService {
   #accessToken;
-  constructor(accessToken) {
-    this.#accessToken = accessToken;
 
-    this.api = axios.create({
-      baseURL: import.meta.env.VITE_GAME_SERVICE_BASE_URL, // Ensure this environment variable is correctly set
-    });
+  constructor(accessToken, baseURL) {
+    this.#accessToken = accessToken;
+    this.setBaseURL(baseURL);
 
     this.setHeaders();
   }
+
   async setHeaders() {
     this.api.defaults.headers['x-api-key'] = `${this.#accessToken}`;
   }
 
-  async getQuests() {
-    const response = await this.api.get('/user-quest');
+  setBaseURL(baseURL) {
+    if (this.api) {
+      this.api.defaults.baseURL = baseURL;
+    } else {
+      this.api = axios.create({
+        baseURL,
+      });
+    }
+  }
 
+  async getQuests() {
+    console.log('Current baseURL:', this.api.defaults.baseURL);
+    const response = await this.api.get('/user-quest', { baseURL: this.api.defaults.baseURL });
+
+    console.log('Fetched with baseURL', response);
     return response.data;
   }
 
