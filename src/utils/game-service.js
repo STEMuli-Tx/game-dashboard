@@ -1,24 +1,33 @@
 import axios from 'axios';
 
 import { toast } from 'react-toastify';
+
 export default class GameService {
   #accessToken;
-  constructor(accessToken) {
-    this.#accessToken = accessToken;
 
-    this.api = axios.create({
-      baseURL: import.meta.env.VITE_GAME_SERVICE_BASE_URL, // Ensure this environment variable is correctly set
-    });
+  constructor(accessToken, baseURL) {
+    this.#accessToken = accessToken;
+    this.setBaseURL(baseURL);
 
     this.setHeaders();
   }
+
   async setHeaders() {
     this.api.defaults.headers['x-api-key'] = `${this.#accessToken}`;
   }
 
+  setBaseURL(baseURL) {
+    if (this.api) {
+      this.api.defaults.baseURL = baseURL;
+    } else {
+      this.api = axios.create({
+        baseURL,
+      });
+    }
+  }
+
   async getQuests() {
     const response = await this.api.get('/user-quest');
-
     return response.data;
   }
 
@@ -26,7 +35,7 @@ export default class GameService {
     toast.info(`Resetting quests...`, {
       theme: 'colored',
     });
-    const response = await this.api.post('/user-quest/reset', { questIds: questIds });
+    const response = await this.api.post('/user-quest/reset', { questIds });
 
     toast.success(`Reset ${response.data.data.modifiedCount} quests`, {
       theme: 'colored',

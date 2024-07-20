@@ -14,34 +14,50 @@ import { useGameService } from '../../../context/gameServiceContext';
 import ResetRoamingNPC from '../reset-roaming-npc';
 import AddAllInventoryItems from '../add-all-inventory-items';
 import DeleteTitlePlayer from '../delete-player';
+import EnvironmentDropdown from '../environment-dropdown';
+import Box from '@mui/material/Box';
 
 // ----------------------------------------------------------------------
 
 export default function AppView() {
-  const { getQuests, getRoamingNPCs } = useGameService();
+  const { getQuests, getRoamingNPCs, gameService, isReady, setURL, baseURL } = useGameService();
   const [quests, setQuests] = useState([]);
   const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roamingNPCLoading, setRoamingNPCLoading] = useState(true);
 
   useEffect(() => {
-    fetchQuests();
-    fetchRoamingNPCs();
-  }, []);
+    if (isReady) {
+      setURL(baseURL);
+      fetchQuests();
+      fetchRoamingNPCs();
+      // Call other functions that depend on gameService being initialized
+    }
+  }, [isReady, baseURL]);
 
   const fetchQuests = async () => {
     setLoading(true); // Set loading state to true (display loading spinner)
     try {
       const data = await getQuests(); // Fetch the quests
 
-      setQuests(
-        data.map((quest) => ({
-          id: quest._id,
-          name: quest.title,
-          status: quest.userQuest.status,
-          progress: quest.userQuest.progress,
-        }))
-      ); // Transform and set the quests data
+      if (Array.isArray(data))
+        setQuests(
+          data.map((quest) => ({
+            id: quest._id,
+            name: quest.title,
+            status: quest.userQuest ? quest.userQuest.status : "userQuest doesn't exist",
+            progress: quest.userQuest ? quest.userQuest.progress : "userQuest doesn't exist",
+          }))
+        );
+      else
+        setQuests(
+          data.data.map((quest) => ({
+            id: quest._id,
+            name: quest.title,
+            status: quest.userQuest ? quest.userQuest.status : "userQuest doesn't exist",
+            progress: quest.userQuest ? quest.userQuest.progress : "userQuest doesn't exist",
+          }))
+        );
 
       setLoading(false); // Set loading state to false (hide loading spinner)
     } catch (error) {
@@ -69,6 +85,11 @@ export default function AppView() {
 
   return (
     <Container maxWidth="xl">
+      <Grid item xs={6} md={6} lg={6}>
+        <EnvironmentDropdown />
+      </Grid>
+      <br />
+      <br />
       <Grid item xs={12}>
         <Typography variant="h5" style={{ marginBottom: '20px' }}>
           🗻 Quests
