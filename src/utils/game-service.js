@@ -18,6 +18,7 @@ export default class GameService {
 
   setBaseURL(baseURL) {
     if (this.api) {
+      console.log('Setting base URL inside game-service', baseURL);
       this.api.defaults.baseURL = baseURL;
     } else {
       this.api = axios.create({
@@ -27,10 +28,7 @@ export default class GameService {
   }
 
   async getQuests() {
-    console.log('Current baseURL:', this.api.defaults.baseURL);
-    const response = await this.api.get('/user-quest', { baseURL: this.api.defaults.baseURL });
-
-    console.log('Fetched with baseURL', response);
+    const response = await this.api.get('/user-quest');
     return response.data;
   }
 
@@ -38,7 +36,7 @@ export default class GameService {
     toast.info(`Resetting quests...`, {
       theme: 'colored',
     });
-    const response = await this.api.post('/user-quest/reset', { questIds: questIds });
+    const response = await this.api.post('/user-quest/reset', { questIds });
 
     toast.success(`Reset ${response.data.data.modifiedCount} quests`, {
       theme: 'colored',

@@ -19,7 +19,7 @@ import EnvironmentDropdown from '../environment-dropdown';
 // ----------------------------------------------------------------------
 
 export default function AppView() {
-  const { getQuests, getRoamingNPCs, gameService, isReady, environment } = useGameService();
+  const { getQuests, getRoamingNPCs, gameService, isReady, setURL, baseURL } = useGameService();
   const [quests, setQuests] = useState([]);
   const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,12 +27,12 @@ export default function AppView() {
 
   useEffect(() => {
     if (isReady) {
-      console.log('From dash-board view fetching quests with', environment);
+      setURL(baseURL);
       fetchQuests();
       fetchRoamingNPCs();
       // Call other functions that depend on gameService being initialized
     }
-  }, [isReady, environment]);
+  }, [isReady, baseURL]);
 
   const fetchQuests = async () => {
     setLoading(true); // Set loading state to true (display loading spinner)
@@ -44,8 +44,8 @@ export default function AppView() {
           data.map((quest) => ({
             id: quest._id,
             name: quest.title,
-            status: quest.userQuest.status,
-            progress: quest.userQuest.progress,
+            status: quest.userQuest ? quest.userQuest.status : "userQuest doesn't exist",
+            progress: quest.userQuest ? quest.userQuest.progress : "userQuest doesn't exist",
           }))
         );
       else
@@ -53,8 +53,8 @@ export default function AppView() {
           data.data.map((quest) => ({
             id: quest._id,
             name: quest.title,
-            status: quest.userQuest.status,
-            progress: quest.userQuest.progress,
+            status: quest.userQuest ? quest.userQuest.status : "userQuest doesn't exist",
+            progress: quest.userQuest ? quest.userQuest.progress : "userQuest doesn't exist",
           }))
         );
 

@@ -14,7 +14,7 @@ export const GameServiceProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [gameService, setGameService] = useState(null);
-  const [environment, setEnvironment] = useState('https://service-stm.stardevs.xyz/v1'); // Default environment
+  const [baseURL, setBaseURL] = useState('https://service-stm.stardevs.xyz/v1'); // Default environment
   const [isReady, setIsReady] = useState(false); // New loading state
   useEffect(() => {
     const handleStorageChange = (e) => {
@@ -38,17 +38,19 @@ export const GameServiceProvider = ({ children }) => {
     };
   }, [router]);
   useEffect(() => {
-    console.log('Current environment in context::::::', environment);
+    console.log('Current environment in context::::::', baseURL);
     if (token && !gameService) {
-      setGameService(new GameService(token, environment));
+      setGameService(new GameService(token, baseURL));
       setIsReady(true); // Set isReady to true when gameService is initialized
-    } else if (gameService) {
-      gameService.setBaseURL(environment);
-      console.log('Updating state environment', environment);
-      setEnvironment(environment);
     }
-  }, [token, environment, gameService]);
+  }, [token, baseURL, gameService]);
 
+  const setURL = (url) => {
+    if (gameService) {
+      gameService.setBaseURL(url);
+      setBaseURL(url);
+    }
+  };
   const getQuests = async () => gameService.getQuests();
 
   const markKioskObjectivesComplete = async () => gameService.markKioskObjectivesComplete();
@@ -81,8 +83,8 @@ export const GameServiceProvider = ({ children }) => {
   return (
     <GameServiceContext.Provider
       value={{
-        setEnvironment,
-        environment,
+        setURL,
+        baseURL,
         gameService,
         isReady,
         getQuests,

@@ -3,20 +3,19 @@ import PropTypes from 'prop-types'; // If you decide to use PropTypes
 import { useGameService } from '../../context/gameServiceContext';
 
 function EnvironmentDropdown() {
-  const { setEnvironment } = useGameService();
+  const { setURL } = useGameService();
 
   const handleChange = (event) => {
-
-    setEnvironment(event.target.value);
+    setURL(event.target.value);
   };
 
   return (
     <>
       <label htmlFor="environmentSelect">Select Environment:</label>
       <select id="environmentSelect" onChange={handleChange}>
-        <option value="https://service-stm.stardevs.xyz/v1">Production</option>
-        <option value="https://service-stm-dev.stardevs.xyz/v1">Development</option>
-        <option value="https://service-stm-stg.stardevs.xyz/v1">Testing</option>
+        <option value={import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL}>Production</option>
+        <option value={import.meta.env.VITE_PROJECT_GAME_SERVICE_BASE_URL}>Project</option>
+        <option value={import.meta.env.VITE_DEVELOP_GAME_SERVICE_BASE_URL}>Development</option>
       </select>
     </>
   );
