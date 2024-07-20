@@ -18,7 +18,6 @@ export default class GameService {
 
   setBaseURL(baseURL) {
     if (this.api) {
-      console.log('Setting base URL inside game-service', baseURL);
       this.api.defaults.baseURL = baseURL;
     } else {
       this.api = axios.create({

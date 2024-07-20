@@ -1,29 +1,35 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types'; // If you decide to use PropTypes
+import React from 'react';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import Box from '@mui/material/Box';
 import { useGameService } from '../../context/gameServiceContext';
 
 function EnvironmentDropdown() {
-  const { setURL } = useGameService();
+  const { setURL, baseURL } = useGameService();
 
   const handleChange = (event) => {
     setURL(event.target.value);
   };
 
   return (
-    <>
-      <label htmlFor="environmentSelect">Select Environment:</label>
-      <select id="environmentSelect" onChange={handleChange}>
-        <option value={import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL}>Production</option>
-        <option value={import.meta.env.VITE_PROJECT_GAME_SERVICE_BASE_URL}>Project</option>
-        <option value={import.meta.env.VITE_DEVELOP_GAME_SERVICE_BASE_URL}>Development</option>
-      </select>
-    </>
+    <Box sx={{ minWidth: 120 }}>
+      <FormControl fullWidth>
+        <InputLabel id="environment-select-label">Select Environment</InputLabel>
+        <Select
+          labelId="environment-select-label"
+          id="environmentSelect"
+          onChange={handleChange}
+          label="Select Environment"
+          value={baseURL}
+        >
+          <MenuItem value={import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL}>Production</MenuItem>
+          <MenuItem value={import.meta.env.VITE_PROJECT_GAME_SERVICE_BASE_URL}>Project</MenuItem>
+          <MenuItem value={import.meta.env.VITE_DEVELOP_GAME_SERVICE_BASE_URL}>
+            Development
+          </MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
   );
 }
-
-// Optional: Adding PropTypes
-EnvironmentDropdown.propTypes = {
-  // Define PropTypes if needed
-};
 
 export default EnvironmentDropdown;

@@ -15,6 +15,7 @@ import ResetRoamingNPC from '../reset-roaming-npc';
 import AddAllInventoryItems from '../add-all-inventory-items';
 import DeleteTitlePlayer from '../delete-player';
 import EnvironmentDropdown from '../environment-dropdown';
+import Box from '@mui/material/Box';
 
 // ----------------------------------------------------------------------
 
@@ -84,9 +85,11 @@ export default function AppView() {
 
   return (
     <Container maxWidth="xl">
-      <Grid item xs={12}>
+      <Grid item xs={6} md={6} lg={6}>
         <EnvironmentDropdown />
       </Grid>
+      <br />
+      <br />
       <Grid item xs={12}>
         <Typography variant="h5" style={{ marginBottom: '20px' }}>
           🗻 Quests
