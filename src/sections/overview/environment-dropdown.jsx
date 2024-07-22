@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import { useGameService } from '../../context/gameServiceContext';
