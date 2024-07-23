@@ -10,6 +10,10 @@ function EnvironmentDropdown() {
     setURL(event.target.value);
   };
 
+  useEffect(() => {
+    // see the current dropdown value
+  }, [baseURL]);
+
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
