@@ -9,8 +9,10 @@ function sleep(ms) {
 
 export default function HeatMapPage() {
   const [overlayOpacity, setOverlayOpacity] = useState(1); // Default opacity is 1
-  const [stationHeatmapUrl, setStationHeatmapUrl] = useState(() => localStorage.getItem('station_heatmap') || '');
-  const [tutorialHeatmapUrl, setTutorialHeatmapUrl] = useState(() => localStorage.getItem('tutorial_heatmap') || '');
+  const [stationHeatmapUrl, setStationHeatmapUrl] = useState(() => localStorage.getItem('SUBWAY_STATION_heatmap') || '');
+  const [tutorialHeatmapUrl, setTutorialHeatmapUrl] = useState(() => localStorage.getItem('TUTORIAL_TRAIN_heatmap') || '');
+  
+  const heatmapURL = 'https://us-central1-stemuli-game.cloudfunctions.net/generate_heatmap_function/';
 
   const handleOpacityChange = (event, newValue) => {
     setOverlayOpacity(newValue);
@@ -22,23 +24,22 @@ export default function HeatMapPage() {
   
   const fetchImage = async () => {
     try {
-      const urls = [
-        `https://us-central1-stemuli-game.cloudfunctions.net/generate_heatmap_function/generate_heatmap?level_name=SUBWAY_STATION&access_token=${localStorage.getItem('access_token')}`
+      const levelNames = [
+        'SUBWAY_STATION',
+        'TUTORIAL_TRAIN'
       ];
 
-      for (const url of urls) {
+      for (const levelName of levelNames) {
+        const url = `${heatmapURL}generate_heatmap?level_name=${levelName}&access_token=${localStorage.getItem('access_token')}`;
+        
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Network response was not ok for ${url}`);
+        if (!response.ok) throw new Error(`Network response was not ok for ${levelName}`);
 
         const imageBlob = await response.blob();
         const localUrl = URL.createObjectURL(imageBlob);
 
         // Assuming you want to set different localStorage items based on the URL
-        if (url.includes('SUBWAY_STATION')) {
-          localStorage.setItem('station_heatmap', localUrl);
-        } else if (url.includes('TUTORIAL_TRAIN')) {
-          localStorage.setItem('tutorial_heatmap', localUrl);
-        }
+        localStorage.setItem(`${levelName}_heatmap`, localUrl);
       }
         
     } catch (error) {
