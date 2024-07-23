@@ -1,64 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Slider } from '@mui/material';
-import { useGameService } from 'src/context/gameServiceContext';
-import trainHeatmap from '/src/components/images/subway_train_heatmap.png';
-import stationHeatmap from '/src/components/images/subway_station_heatmap.png';
 import trainImage from '/src/components/images/subway_train_map.png';
 import stationImage from '/src/components/images/subway_station_map.png';
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export default function HeatMapPage() {
-  const { getStudents, getNavigatorObjectiveDetails, markLearningObjectivesComplete } =
-    useGameService();
-  const [students, setStudents] = useState([]);
-  const [activities, setActivities] = useState([]);
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [selectedActivities, setSelectedActivities] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(1); // Default opacity is 1
+  const [stationHeatmapUrl, setStationHeatmapUrl] = useState(() => localStorage.getItem('station_heatmap') || '');
+  const [tutorialHeatmapUrl, setTutorialHeatmapUrl] = useState(() => localStorage.getItem('tutorial_heatmap') || '');
 
   const handleOpacityChange = (event, newValue) => {
     setOverlayOpacity(newValue);
   };
 
   useEffect(() => {
-    fetchStudents();
-  }, []);
-
-  const fetchStudents = async () => {
-    setLoading(true);
+    fetchImage();
+  }, [stationHeatmapUrl]);
+  
+  const fetchImage = async () => {
     try {
-      const studentsData = await getStudents();
-      const activitiesData = await getNavigatorObjectiveDetails();
+      const urls = [
+        `https://us-central1-stemuli-game.cloudfunctions.net/generate_heatmap_function/generate_heatmap?level_name=SUBWAY_STATION&access_token=${localStorage.getItem('access_token')}`
+      ];
 
-      setStudents(studentsData.data); // Assuming the API response format
-      setActivities(activitiesData.data); // Assuming the API response format
+      for (const url of urls) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Network response was not ok for ${url}`);
+
+        const imageBlob = await response.blob();
+        const localUrl = URL.createObjectURL(imageBlob);
+
+        // Assuming you want to set different localStorage items based on the URL
+        if (url.includes('SUBWAY_STATION')) {
+          localStorage.setItem('station_heatmap', localUrl);
+        } else if (url.includes('TUTORIAL_TRAIN')) {
+          localStorage.setItem('tutorial_heatmap', localUrl);
+        }
+      }
+        
     } catch (error) {
-      console.error('Failed to fetch data:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error fetching image:', error);
     }
-  };
-
-  const handleSubmit = async () => {
-    const submissionData = {
-      userIds: selectedUsers.map((user) => user.userId),
-      objectiveIds: selectedActivities.map((activity) => activity.objective),
-    };
-
-    try {
-      await markLearningObjectivesComplete(submissionData);
-      resetForm();
-      // Handle success response
-    } catch (error) {
-      console.error('Submission failed:', error);
-      // Handle error response
-    }
-  };
-
-  const resetForm = () => {
-    setSelectedUsers([]);
-    setSelectedActivities([]);
   };
 
   return (
@@ -84,22 +69,22 @@ export default function HeatMapPage() {
             Heat Map Alpha
           </Typography>
         </div>
-
+        {}
         <div className="image-container">
           <div className="image-pair">
             <div className="image-title-container">
               <Typography className="image-title">Station Map</Typography>
-              <img src={stationImage} alt="SubwayTrainMap" className="background-image" />
-              <img src={stationHeatmap} alt="SubwayTrainMap" className="overlay-image"
-                   style={{ opacity: overlayOpacity }} />
+              <img src={stationImage} alt="Subway Station Map" className="background-image" />
+              {stationHeatmapUrl ? <img src={stationHeatmapUrl} alt="Subway Station Heatmap" loading="lazy" className="overlay-image"
+                               style={{ opacity: overlayOpacity }}/> : <p>Loading...</p>}
             </div>
           </div>
           <div className="image-pair">
             <div className="image-title-container">
               <Typography className="image-title">Train Map</Typography>
-              <img src={trainImage} alt="SubwayTrainMap" className="background-image" />
-              <img src={trainHeatmap} alt="SubwayTrainMap" className="overlay-image"
-                   style={{ opacity: overlayOpacity }} />
+              <img src={trainImage} alt="Train Map" className="background-image" />
+              {tutorialHeatmapUrl ? <img src={tutorialHeatmapUrl} alt="Tutorial Heatmap" loading="lazy" className="overlay-image"
+                                        style={{ opacity: overlayOpacity }}/> : <p>Loading...</p>}
             </div>
           </div>
         </div>
