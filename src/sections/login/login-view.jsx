@@ -36,10 +36,17 @@ export default function LoginView() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [tenant, setTenant] = useState('STRIDE');
+  const [step, setStep] = useState(1); // Step 1: Enter email, Step 2: Enter password
 
   const stemuliNavigator = new StemuliNavigator();
 
-  const handleClick = async () => {
+  const handleNextClick = async () => {
+    // Call the API with the email
+    await stemuliNavigator.anonymousLogin();
+    setStep(2); // Move to the next step
+  };
+
+  const handleLoginClick = async () => {
     const user = await signIn(tenant, email, password);
 
     if (user) {
@@ -58,58 +65,78 @@ export default function LoginView() {
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" onChange={(e) => setEmail(e.target.value)} />
-
         <TextField
-          name="password"
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          onChange={(e) => setPassword(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          name="email"
+          label="Email address"
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={step === 2}
         />
-        <Select
-          value={tenant}
-          onChange={handleChange}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Account type' }}
-          fullWidth
-          sx={{ mt: 1 }}
-        >
-          <MenuItem value="REACH">Reach</MenuItem>
-          <MenuItem value="STRIDE">Stride</MenuItem>
-        </Select>
+
+        {step === 2 && (
+          <TextField
+            name="password"
+            label="Password"
+            type={showPassword ? 'text' : 'password'}
+            onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+
+        {/* <Select */}
+        {/*   value={tenant} */}
+        {/*   onChange={handleChange} */}
+        {/*   displayEmpty */}
+        {/*   inputProps={{ 'aria-label': 'Account type' }} */}
+        {/*   fullWidth */}
+        {/*   sx={{ mt: 1 }} */}
+        {/* > */}
+        {/*   <MenuItem value="REACH">Reach</MenuItem> */}
+        {/*   <MenuItem value="STRIDE">Stride</MenuItem> */}
+        {/* </Select> */}
       </Stack>
 
-      {/* <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-        <Link variant="subtitle2" underline="hover">
-          Forgot password?
-        </Link>
-      </Stack> */}
-
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        onClick={handleClick}
-        sx={{
-          mt: 2, // This adds margin-top spacing. '2' is the theme spacing value, adjust as needed.
-          backgroundColor: '#B360F4', // This sets the button color to purple.
-          '&:hover': {
-            backgroundColor: '#a050e0', // Optional: darken the color slightly on hover, adjust as needed.
-          },
-        }}
-      >
-        Login
-      </LoadingButton>
+      {step === 1 ? (
+        <Button
+          fullWidth
+          size="large"
+          variant="contained"
+          onClick={handleNextClick}
+          sx={{
+            mt: 2,
+            backgroundColor: '#B360F4',
+            '&:hover': {
+              backgroundColor: '#a050e0',
+            },
+          }}
+        >
+          Next
+        </Button>
+      ) : (
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="contained"
+          onClick={handleLoginClick}
+          sx={{
+            mt: 2,
+            backgroundColor: '#B360F4',
+            '&:hover': {
+              backgroundColor: '#a050e0',
+            },
+          }}
+        >
+          Login
+        </LoadingButton>
+      )}
     </>
   );
 
@@ -141,50 +168,7 @@ export default function LoginView() {
         >
           <Typography variant="h4">Sign in to Stem City Dashboard</Typography>
 
-          {/* <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-            Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }}>
-              Get started
-            </Link>
-          </Typography> */}
-
-          {/* <Stack direction="row" spacing={2}>
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:google-fill" color="#DF3E30" />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:facebook-fill" color="#1877F2" />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
-            </Button>
-          </Stack> */}
-
-          <Divider sx={{ my: 3 }}>
-            {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              OR
-            </Typography> */}
-          </Divider>
+          <Divider sx={{ my: 3 }} />
 
           {renderForm}
         </Card>

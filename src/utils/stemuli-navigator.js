@@ -3,7 +3,17 @@ import Cookies from 'js-cookie';
 
 export default class StemuliNavigator {
   #tenantId;
+
   #tenantKey;
+
+  #tenantName;
+
+  #stemuliTenantId = import.meta.env.VITE_STEMULI_TENANT_ID;
+
+  #stemuliTenantKey = import.meta.env.VITE_STEMULI_TENANT_KEY;
+
+  #stemuliAccessToken;
+
   constructor() {
     this.api = axios.create({
       baseURL: import.meta.env.VITE_STEMULI_NAVIGATOR_API, // Ensure this environment variable is correctly set
@@ -35,9 +45,44 @@ export default class StemuliNavigator {
       grant_type: 'credential',
     });
 
-    this.handleLocalStorage(response);
+    this.#handleLocalStorage(response);
 
     return response.data;
+  }
+
+  async anonymousLogin() {
+    try {
+      const response = await this.api.post('/nucleus-auth/v2/signin', {
+        client_id: this.#stemuliTenantId,
+        client_key: this.#stemuliTenantKey,
+        grant_type: 'anonymous',
+      });
+
+      this.setBasicToken(response.data.access_token);
+    } catch (e) {
+      console.log('Error in anonymous call:::::', e);
+    }
+  }
+
+  async getAccounts(email) {
+    try {
+      const { data } = await this.api.post('/nucleus-auth/v2/users/accounts', {
+        email,
+      });
+
+      this.setAccount(data.user_accounts);
+      return data.user_accounts;
+    } catch (e) {
+      console.log('Error in anonymous call:::::', e);
+    }
+  }
+
+  setAccount(accounts) {
+    try {
+      this.#tenantId = accounts[0].tenant_id;
+    } catch (e) {
+      console.error('Error setting account', e);
+    }
   }
 
   handleLocalStorage = (response) => {
