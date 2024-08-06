@@ -109,6 +109,7 @@ export const GameServiceProvider = ({ children }) => {
         getNavigatorObjectiveDetails,
         markLearningObjectivesComplete,
         deleteTitlePlayer,
+        urlInit,
       }}
     >
       {children}

@@ -85,6 +85,7 @@ export default function LoginView() {
         >
           <MenuItem value="REACH">Reach</MenuItem>
           <MenuItem value="STRIDE">Stride</MenuItem>
+          <MenuItem value="STEMULI">Stemuli</MenuItem>
         </Select>
       </Stack>
 

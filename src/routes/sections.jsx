@@ -12,12 +12,12 @@ export const InventoryPage = lazy(() => import('src/pages/inventory'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const LearningManagementPage = lazy(() => import('src/pages/learning-management'));
+export const AccountManagementPage = lazy(() => import('src/pages/account-management'));
+export const UserManagementPage = lazy(() => import('src/pages/user-management'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
-// ----------------------------------------------------------------------
-
 export default function Router() {
-  const { user } = useContext(AuthContext); // This line may not be necessary depending on your implementation
+  const { user } = useContext(AuthContext);
 
   const routes = useRoutes([
     {
@@ -32,9 +32,8 @@ export default function Router() {
       ),
       children: [
         { element: <IndexPage />, index: true },
-        { path: 'learning-management', element: <LearningManagementPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
+        { path: 'account-management', element: <AccountManagementPage /> },
+        { path: 'account-management/:id', element: <UserManagementPage /> },
       ],
     },
     {
