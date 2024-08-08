@@ -51,11 +51,10 @@ export default class StemuliNavigator {
   };
 
   async getTokenDetails() {
-    this.api.defaults.headers.common.Authorization = `Token ${localStorage.getItem(
-      'access_token'
-    )}`;
+    const token = localStorage.getItem('access_token');
+    this.api.defaults.headers.common.Authorization = `Token ${token}`;
     const response = await this.api.get('/nucleus-auth/v2/token', {});
 
-    return response.data;
+    return { ...response.data, token };
   }
 }

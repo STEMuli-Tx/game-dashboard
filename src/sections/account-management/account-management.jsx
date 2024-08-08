@@ -16,7 +16,9 @@ import { useGameService } from 'src/context/gameServiceContext';
 
 export default function AccountManagementPage() {
   const { getAccounts } = useGameService();
-  const [accounts, setAccounts] = useState([{ id: '123', name: 'Stemuli', shortname: 'stemuli' }]);
+  const [accounts, setAccounts] = useState([
+    { id: '16651a43-8dee-4a5c-8ce4-145d9629274d', name: 'Stemuli Sandbox', shortname: 'sandbox' },
+  ]);
   const navigate = useNavigate();
 
   useEffect(() => {

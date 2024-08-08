@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -10,11 +10,13 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from '@mui/material';
 import { useGameService } from 'src/context/gameServiceContext';
 
 export default function UserManagementView() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { getUsersByAccountId } = useGameService();
   const [users, setUsers] = useState([
     { id: '123', firstName: 'Jack', lastName: 'Nicholson', email: 'jackieboy@stemuli.net' },
@@ -33,6 +35,13 @@ export default function UserManagementView() {
       <Typography variant="h4" mb={5}>
         Users for Account {id}
       </Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate(`/account-management/${id}/create-user`)}
+      >
+        Create Users
+      </Button>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
