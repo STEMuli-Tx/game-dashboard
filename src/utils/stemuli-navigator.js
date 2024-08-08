@@ -3,7 +3,9 @@ import Cookies from 'js-cookie';
 
 export default class StemuliNavigator {
   #tenantId;
+
   #tenantKey;
+
   constructor() {
     this.api = axios.create({
       baseURL: import.meta.env.VITE_STEMULI_NAVIGATOR_API, // Ensure this environment variable is correctly set
@@ -18,6 +20,9 @@ export default class StemuliNavigator {
     } else if (name === 'STRIDE') {
       this.#tenantId = import.meta.env.VITE_STRIDE_TENANT_ID;
       this.#tenantKey = import.meta.env.VITE_STRIDE_TENANT_KEY;
+    } else if (name === 'STEMULI') {
+      this.#tenantId = import.meta.env.VITE_STEMULI_TENANT_ID;
+      this.#tenantKey = import.meta.env.VITE_STEMULI_TENANT_KEY;
     }
   }
 
@@ -46,11 +51,10 @@ export default class StemuliNavigator {
   };
 
   async getTokenDetails() {
-    this.api.defaults.headers.common.Authorization = `Token ${localStorage.getItem(
-      'access_token'
-    )}`;
+    const token = localStorage.getItem('access_token');
+    this.api.defaults.headers.common.Authorization = `Token ${token}`;
     const response = await this.api.get('/nucleus-auth/v2/token', {});
 
-    return response.data;
+    return { ...response.data, token };
   }
 }

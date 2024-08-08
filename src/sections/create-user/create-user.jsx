@@ -1,0 +1,212 @@
+import React, { useState } from 'react';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Grid,
+} from '@mui/material';
+import axios from 'axios';
+import { useAuth } from 'src/context/authContext';
+import { toast } from 'react-toastify';
+import DragNDrop from './DragNDrop';
+
+export default function CreateUserView() {
+  const { user } = useAuth();
+  console.log(user);
+  const [type, setType] = useState('CSV');
+  const [formData, setFormData] = useState({
+    role: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    username: '',
+    password: '',
+    referenceId: '',
+    info: '',
+    loginType: '',
+  });
+  const [files, setFiles] = useState([]);
+
+  const handleTypeChange = (event) => {
+    setType(event.target.value);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (type === 'CSV') {
+      files.forEach((file) => {
+        const fileFormData = new FormData();
+        fileFormData.append('', file);
+
+        const config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: `https://stemulinavigator.com/api/admin/v1/custom/roster/upload?userId=${user.userId}&tenantId=${user.tenantId}&fileUploadType=rostering`,
+          headers: {
+            Authorization: `Token ${user.token}`,
+          },
+          data: fileFormData,
+        };
+
+        axios(config)
+          .then((response) => {
+            toast.info(`Starting Upload`, {
+              theme: 'colored',
+            });
+          })
+          .catch((error) => {
+            toast.error(`Error uploading`, {
+              theme: 'colored',
+            });
+            console.error(error);
+          });
+      });
+    } else {
+      // Handle manual form submission
+    }
+  };
+
+  return (
+    <Container>
+      <Typography variant="h4" mb={5}>
+        Create User
+      </Typography>
+      <FormControl fullWidth margin="normal">
+        <InputLabel>Type</InputLabel>
+        <Select value={type} onChange={handleTypeChange}>
+          <MenuItem value="CSV">CSV</MenuItem>
+          <MenuItem value="Manual">Manual</MenuItem>
+        </Select>
+      </FormControl>
+      {type === 'CSV' ? (
+        <form onSubmit={handleSubmit}>
+          <DragNDrop setFiles={setFiles} />
+          <aside>
+            <h4>Files</h4>
+            <ul>
+              {files.map((file) => (
+                <li key={file.path}>
+                  {file.path} - {file.size} bytes
+                </li>
+              ))}
+            </ul>
+          </aside>
+          <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
+            Submit
+          </Button>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Select Role</InputLabel>
+            <Select name="role" value={formData.role} onChange={handleInputChange}>
+              <MenuItem value="Student">Student</MenuItem>
+              <MenuItem value="Teacher">Teacher</MenuItem>
+              <MenuItem value="Admin">Admin</MenuItem>
+            </Select>
+          </FormControl>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Username"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleInputChange}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Reference Id"
+                name="referenceId"
+                value={formData.referenceId}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Info"
+                name="info"
+                value={formData.info}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Login Type</InputLabel>
+                <Select name="loginType" value={formData.loginType} onChange={handleInputChange}>
+                  <MenuItem value="Credential">Credential</MenuItem>
+                  <MenuItem value="Google">Google</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
+            Submit
+          </Button>
+        </form>
+      )}
+    </Container>
+  );
+}

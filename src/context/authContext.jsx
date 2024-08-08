@@ -20,13 +20,21 @@ export const AuthProvider = ({ children }) => {
     // });
   }, []);
 
+  const createUser = (data) => {
+    setUser({
+      name: `${data.first_name} ${data.last_name}`,
+      userId: data.user_id,
+      email: data.email,
+      userType: data.user_category,
+      tenantId: data.tenant.tenant_id,
+      tenantName: data.tenant.short_name,
+      token: data.token,
+    });
+  };
+
   const setUserDetails = async () => {
     const response = await stemuliNavigator.getTokenDetails();
-    setUser({
-      name: `${response.first_name} ${response.last_name}`,
-      email: response.email,
-      userType: response.user_category,
-    });
+    createUser(response);
   };
 
   // Sign in function to update the user state
@@ -35,21 +43,13 @@ export const AuthProvider = ({ children }) => {
     const userData = await stemuliNavigator.signIn(tenant, email, password);
 
     if (userData) {
-      setUser({
-        name: `${userData.first_name} ${userData.last_name}`,
-        email: userData.email,
-        userType: userData.user_category,
-      });
+      createUser(userData);
       // Set the access_token in a secure, HttpOnly cookie if using cookies for token management
 
       localStorage.setItem('isLoggedIn', 'true');
       setUserDetails();
 
-      return {
-        name: `${userData.first_name} ${userData.last_name}`,
-        email: userData.email,
-        userType: userData.user_category,
-      };
+      return user;
     }
   };
 
