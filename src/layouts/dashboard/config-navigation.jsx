@@ -23,7 +23,7 @@ export const getNavConfig = (userType) => {
       return [
         {
           title: 'User Management',
-          path: '/user-management',
+          path: '/',
           icon: icon('ic_cart'),
         },
       ];

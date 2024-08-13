@@ -6,7 +6,7 @@ import PublicRoute from 'src/routes/components/public-route';
 
 import DashboardLayout from 'src/layouts/dashboard';
 
-export const IndexPage = lazy(() => import('src/pages/app'));
+export const DashboardPage = lazy(() => import('src/pages/app'));
 export const BlogPage = lazy(() => import('src/pages/blog'));
 export const InventoryPage = lazy(() => import('src/pages/inventory'));
 export const LoginPage = lazy(() => import('src/pages/login'));
@@ -20,6 +20,16 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export default function Router() {
   const { user } = useContext(AuthContext);
 
+  const getDefaultRoute = () => {
+    if (user?.userType === 'student') {
+      return <DashboardPage />;
+    } else if (user?.userType === 'teacher') {
+      return <UserManagementPage />;
+    } else {
+      return <Navigate to="/login" replace />;
+    }
+  };
+
   const routes = useRoutes([
     {
       element: (
@@ -32,8 +42,8 @@ export default function Router() {
         </ProtectedRoute>
       ),
       children: [
-        { element: <IndexPage />, index: true },
-        // { path: 'account-management', element: <AccountManagementPage /> },
+        { path: '/', element: getDefaultRoute() },
+        { path: 'dashboard', element: <DashboardPage /> },
         { path: 'user-management', element: <UserManagementPage /> },
         { path: 'account-management/:id/create-user', element: <CreateUserPage /> },
       ],

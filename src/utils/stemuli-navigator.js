@@ -57,4 +57,45 @@ export default class StemuliNavigator {
 
     return { ...response.data, token };
   }
+
+  async getRosterList(userId, tenantId, token, offset = 0, limit = 10) {
+    try {
+      this.api.defaults.headers.common.Authorization = `Token ${token}`;
+      const response = await this.api.get(`/admin/v1/custom/roster/list`, {
+        params: {
+          tenantId,
+          userId,
+          offset,
+          limit,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch roster list:', error);
+      throw error;
+    }
+  }
+
+  async uploadRosterFile(userId, tenantId, token, file) {
+    try {
+      const fileFormData = new FormData();
+      fileFormData.append('', file);
+
+      const config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `/admin/v1/custom/roster/upload?userId=${userId}&tenantId=${tenantId}&fileUploadType=rostering`,
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+        data: fileFormData,
+      };
+
+      const response = await this.api(config);
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+  }
 }

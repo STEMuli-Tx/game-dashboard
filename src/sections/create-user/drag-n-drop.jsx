@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { makeStyles } from '@mui/styles';
 
@@ -14,9 +14,20 @@ const useStyles = makeStyles({
 
 function DragNDrop({ setFiles }) {
   const classes = useStyles();
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      // Only accept the first file
+      if (acceptedFiles.length > 0) {
+        setFiles([acceptedFiles[0]]);
+      }
+    },
+    [setFiles]
+  );
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setFiles(acceptedFiles);
+    onDrop,
+    multiple: false,
+    accept: {
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
     },
   });
 
@@ -24,7 +35,7 @@ function DragNDrop({ setFiles }) {
     <section className="container">
       <div {...getRootProps({ className: classes.dropzone })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p>Drag 'n' drop an .xlsx file here, or click to select a file</p>
       </div>
     </section>
   );

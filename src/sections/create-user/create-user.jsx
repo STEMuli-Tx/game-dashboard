@@ -1,3 +1,4 @@
+// src/sections/create-user/create-user.jsx
 import React, { useState } from 'react';
 import {
   Container,
@@ -10,14 +11,14 @@ import {
   FormControl,
   Grid,
 } from '@mui/material';
-import axios from 'axios';
 import { useAuth } from 'src/context/authContext';
 import { toast } from 'react-toastify';
-import DragNDrop from './DragNDrop';
+import DragNDrop from './drag-n-drop';
+import RosterTable from './roster-table';
+import StemuliNavigator from 'src/utils/stemuli-navigator';
 
 export default function CreateUserView() {
   const { user } = useAuth();
-  console.log(user);
   const [type, setType] = useState('CSV');
   const [formData, setFormData] = useState({
     role: '',
@@ -31,6 +32,7 @@ export default function CreateUserView() {
     loginType: '',
   });
   const [files, setFiles] = useState([]);
+  const stemuliNavigator = new StemuliNavigator();
 
   const handleTypeChange = (event) => {
     setType(event.target.value);
@@ -41,37 +43,24 @@ export default function CreateUserView() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (type === 'CSV') {
-      files.forEach((file) => {
-        const fileFormData = new FormData();
-        fileFormData.append('', file);
-
-        const config = {
-          method: 'post',
-          maxBodyLength: Infinity,
-          url: `https://stemulinavigator.com/api/admin/v1/custom/roster/upload?userId=${user.userId}&tenantId=${user.tenantId}&fileUploadType=rostering`,
-          headers: {
-            Authorization: `Token ${user.token}`,
-          },
-          data: fileFormData,
-        };
-
-        axios(config)
-          .then((response) => {
-            toast.info(`Starting Upload`, {
-              theme: 'colored',
-            });
-          })
-          .catch((error) => {
-            toast.error(`Error uploading`, {
-              theme: 'colored',
-            });
-            console.error(error);
+      try {
+        for (const file of files) {
+          await stemuliNavigator.uploadRosterFile(user.userId, user.tenantId, user.token, file);
+          toast.info(`Starting Upload`, {
+            theme: 'colored',
           });
-      });
+        }
+        setFiles([]);
+      } catch (error) {
+        toast.error(`Error uploading`, {
+          theme: 'colored',
+        });
+        console.error(error);
+      }
     } else {
       // Handle manual form submission
     }
@@ -86,7 +75,7 @@ export default function CreateUserView() {
         <InputLabel>Type</InputLabel>
         <Select value={type} onChange={handleTypeChange}>
           <MenuItem value="CSV">CSV</MenuItem>
-          <MenuItem value="Manual">Manual</MenuItem>
+          {/* <MenuItem value="Manual">Manual</MenuItem> */}
         </Select>
       </FormControl>
       {type === 'CSV' ? (
@@ -207,6 +196,13 @@ export default function CreateUserView() {
           </Button>
         </form>
       )}
+      <br />
+      <br />
+      <br />
+      <Typography variant="h6" style={{ margin: '10px' }}>
+        Roster Upload Queue
+      </Typography>
+      <RosterTable />
     </Container>
   );
 }
