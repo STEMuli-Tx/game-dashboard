@@ -30,6 +30,11 @@ export const getNavConfig = (userType) => {
           path: '/learning-management',
           icon: icon('ic_cart'),
         },
+        {
+          title: 'All Heatmap',
+          path: '/all-heatmap',
+          icon: icon('ic_cart'),
+        },
       ];
     default:
       return []; // Empty or some default navigation for other user types or guests
