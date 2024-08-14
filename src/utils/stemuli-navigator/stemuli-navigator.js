@@ -111,7 +111,7 @@ class StemuliNavigator {
       const response = await this.api.get('/admin/v1/roster/users', {
         params: { offset, limit, search_terms: searchTerms, role },
       });
-      return response.data.users;
+      return response.data;
     } catch (error) {
       console.error('Failed to fetch users:', error);
       throw error;
