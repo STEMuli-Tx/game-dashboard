@@ -22,12 +22,12 @@ import { bgGradient } from 'src/theme/css';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
-import StemuliNavigator from 'src/utils/stemuli-navigator';
+import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
 import { AuthContext } from 'src/context/authContext';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
-  const { signIn, getUser } = useContext(AuthContext);
+  const { signIn, persistentState } = useContext(AuthContext);
   const theme = useTheme();
 
   const router = useRouter();
@@ -37,21 +37,14 @@ export default function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
   const [tenant, setTenant] = useState('STRIDE');
 
-  const stemuliNavigator = new StemuliNavigator();
-
   const handleClick = async () => {
     const user = await signIn(tenant, email, password);
 
-    if (user) {
-      const userType = user.userType;
-
-      if (userType === 'teacher') router.push('/learning-management');
-      else router.push('/');
-    }
+    if (persistentState.token) router.push('/');
   };
 
   const handleChange = (event) => {
-    stemuliNavigator.setTenant(event.target.value);
+    StemuliNavigator.setTenant(event.target.value);
     setTenant(event.target.value);
   };
 

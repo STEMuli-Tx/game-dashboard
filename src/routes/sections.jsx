@@ -18,12 +18,12 @@ export const CreateUserPage = lazy(() => import('src/pages/create-user'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 export default function Router() {
-  const { user } = useContext(AuthContext);
+  const { persistentState } = useContext(AuthContext);
 
   const getDefaultRoute = () => {
-    if (user?.userType === 'student') {
+    if (persistentState?.userType === 'student') {
       return <DashboardPage />;
-    } else if (user?.userType === 'teacher') {
+    } else if (persistentState?.userType === 'teacher') {
       return <UserManagementPage />;
     } else {
       return <Navigate to="/login" replace />;
@@ -33,7 +33,7 @@ export default function Router() {
   const routes = useRoutes([
     {
       element: (
-        <ProtectedRoute isLoggedIn={user ? true : false}>
+        <ProtectedRoute isLoggedIn={persistentState ? true : false}>
           <DashboardLayout>
             <Suspense fallback={<div>Loading...</div>}>
               <Outlet />

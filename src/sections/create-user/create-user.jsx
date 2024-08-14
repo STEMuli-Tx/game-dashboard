@@ -13,12 +13,12 @@ import {
 } from '@mui/material';
 import { useAuth } from 'src/context/authContext';
 import { toast } from 'react-toastify';
+import StemuliNavigator from 'src/utils/stemuli-navigator';
 import DragNDrop from './drag-n-drop';
 import RosterTable from './roster-table';
-import StemuliNavigator from 'src/utils/stemuli-navigator';
 
 export default function CreateUserView() {
-  const { user } = useAuth();
+  const { persistentState } = useAuth();
   const [type, setType] = useState('CSV');
   const [formData, setFormData] = useState({
     role: '',
@@ -32,7 +32,6 @@ export default function CreateUserView() {
     loginType: '',
   });
   const [files, setFiles] = useState([]);
-  const stemuliNavigator = new StemuliNavigator();
 
   const handleTypeChange = (event) => {
     setType(event.target.value);
@@ -48,12 +47,18 @@ export default function CreateUserView() {
 
     if (type === 'CSV') {
       try {
-        for (const file of files) {
-          await stemuliNavigator.uploadRosterFile(user.userId, user.tenantId, user.token, file);
-          toast.info(`Starting Upload`, {
-            theme: 'colored',
-          });
-        }
+        await Promise.all(
+          files.map(async (file) => {
+            await StemuliNavigator.uploadRosterFile(
+              persistentState.userId,
+              persistentState.tenantId,
+              file
+            );
+            toast.info(`Starting Upload`, {
+              theme: 'colored',
+            });
+          })
+        );
         setFiles([]);
       } catch (error) {
         toast.error(`Error uploading`, {

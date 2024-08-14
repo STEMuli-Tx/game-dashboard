@@ -13,12 +13,10 @@ import {
   Tooltip,
 } from '@mui/material';
 import { useAuth } from 'src/context/authContext';
-import StemuliNavigator from 'src/utils/stemuli-navigator';
-
-const stemuliNavigator = new StemuliNavigator();
+import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
 
 const RosterTable = () => {
-  const { user } = useAuth();
+  const { persistentState } = useAuth();
   const [rosterData, setRosterData] = useState([]);
   const [totalCounts, setTotalCounts] = useState(0);
   const [page, setPage] = useState(0);
@@ -26,10 +24,9 @@ const RosterTable = () => {
 
   const fetchRosterData = async () => {
     try {
-      const data = await stemuliNavigator.getRosterList(
-        user.userId,
-        user.tenantId,
-        user.token,
+      const data = await StemuliNavigator.getRosterList(
+        persistentState.userId,
+        persistentState.tenantId,
         page * rowsPerPage,
         rowsPerPage
       );
@@ -42,7 +39,7 @@ const RosterTable = () => {
 
   useEffect(() => {
     fetchRosterData();
-  }, [user, page, rowsPerPage]);
+  }, [persistentState, page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
