@@ -21,19 +21,20 @@ export default function Router() {
   const { persistentState } = useContext(AuthContext);
 
   const getDefaultRoute = () => {
-    if (persistentState?.userType === 'student') {
+    if (localStorage.getItem('userType') === 'student') {
       return <DashboardPage />;
-    } else if (persistentState?.userType === 'teacher') {
-      return <UserManagementPage />;
-    } else {
-      return <Navigate to="/login" replace />;
     }
+    if (localStorage.getItem('userType') === 'teacher') {
+      return <UserManagementPage />;
+    }
+    console.log('No user match, sending to login');
+    return <Navigate to="/login" replace />;
   };
 
   const routes = useRoutes([
     {
       element: (
-        <ProtectedRoute isLoggedIn={persistentState ? true : false}>
+        <ProtectedRoute>
           <DashboardLayout>
             <Suspense fallback={<div>Loading...</div>}>
               <Outlet />

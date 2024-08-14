@@ -1,38 +1,31 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-
+import { useRouter } from 'src/routes/hooks';
 import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
 
 export const AuthContext = createContext(null);
 
-const usePersistentState = (key, initialValue) => {
-  const [state, setState] = useState(() => {
-    const storedValue = localStorage.getItem(key);
-    return storedValue !== null ? JSON.parse(storedValue) : initialValue;
-  });
-
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
-  }, [key, state]);
-
-  const setPersistentState = (newState) => {
-    setState(newState);
-  };
-
-  return [state, setPersistentState];
-};
-
 export const AuthProvider = ({ children }) => {
-  const [persistentState, setPersistentStorage] = usePersistentState('persistentState', {});
+  const router = useRouter();
+  const [persistentState, setPersistentState] = useState(() => {
+    const token = localStorage.getItem('token');
+    const providedAt = localStorage.getItem('providedAt');
+    const tokenValidity = localStorage.getItem('tokenValidity');
+    const name = localStorage.getItem('name');
+    const email = localStorage.getItem('email');
+    return { token, providedAt, tokenValidity, name, email };
+  });
 
   useEffect(() => {
     const token = persistentState.token;
     if (token) {
+      console.log('Pushing to index');
       StemuliNavigator.setToken(token);
+      router.push('/');
     }
   }, [persistentState]);
 
   const authenticateUser = (data) => {
-    setPersistentStorage({
+    const userData = {
       name: `${data.first_name} ${data.last_name}`,
       userId: data.user_id,
       email: data.email,
@@ -40,8 +33,15 @@ export const AuthProvider = ({ children }) => {
       tenantId: data.tenant.tenant_id,
       tenantName: data.tenant.short_name,
       token: data.access_token,
+      providedAt: data.provided_at,
+      tokenValidity: data.access_token_validity,
+    };
+
+    Object.entries(userData).forEach(([key, value]) => {
+      localStorage.setItem(key, value);
     });
     StemuliNavigator.setToken(data.access_token);
+    setPersistentState(userData);
   };
 
   // Sign in function to update the user state
@@ -51,12 +51,15 @@ export const AuthProvider = ({ children }) => {
 
     if (userData) {
       authenticateUser(userData);
+      router.push('/');
     }
   };
 
   // Logout function to clear user state
   const logout = () => {
-    localStorage.setItem();
+    console.log('Logging out');
+    localStorage.clear();
+    router.push('/login');
     // Additional logout logic (e.g., clearing tokens)
   };
 

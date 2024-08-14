@@ -1,14 +1,11 @@
 import { useState, useContext } from 'react';
 
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -16,21 +13,18 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { useRouter } from 'src/routes/hooks';
+import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
 
 import { bgGradient } from 'src/theme/css';
+import { AuthContext } from 'src/context/authContext';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
-import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
-import { AuthContext } from 'src/context/authContext';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
   const { signIn, persistentState } = useContext(AuthContext);
   const theme = useTheme();
-
-  const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,9 +32,7 @@ export default function LoginView() {
   const [tenant, setTenant] = useState('STRIDE');
 
   const handleClick = async () => {
-    const user = await signIn(tenant, email, password);
-
-    if (persistentState.token) router.push('/');
+    await signIn(tenant, email, password);
   };
 
   const handleChange = (event) => {
