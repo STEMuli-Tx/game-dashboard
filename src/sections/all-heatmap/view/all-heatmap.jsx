@@ -19,8 +19,21 @@ export default function AllHeatMapPage() {
   };
 
   useEffect(() => {
+    const handleStorageChange = () => {
+      setStationHeatmapUrl(localStorage.getItem('SUBWAY_STATION_heatmap') || '');
+      setTutorialHeatmapUrl(localStorage.getItem('TUTORIAL_TRAIN_heatmap') || '');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  useEffect(() => {
     fetchImage();
-  }, [stationHeatmapUrl]);
+  }, []);
 
   const fetchImage = async () => {
     try {
@@ -37,6 +50,11 @@ export default function AllHeatMapPage() {
         const imageBlob = await response.blob();
         const localUrl = URL.createObjectURL(imageBlob);
         localStorage.setItem(`${levelName}_heatmap_combined`, localUrl);
+        if (levelName === 'SUBWAY_STATION') {
+          setStationHeatmapUrl(localUrl);
+        } else if (levelName === 'TUTORIAL_TRAIN') {
+          setTutorialHeatmapUrl(localUrl);
+        }
       });
       await Promise.all(fetchPromises);
     } catch (error) {
