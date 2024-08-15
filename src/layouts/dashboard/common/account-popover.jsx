@@ -21,7 +21,7 @@ const MENU_OPTIONS = [];
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-  const { logout, user } = useContext(AuthContext);
+  const { logout, persistentState } = useContext(AuthContext);
   const [open, setOpen] = useState(null);
   const router = useRouter();
 
@@ -56,14 +56,14 @@ export default function AccountPopover() {
       >
         <Avatar
           src={account.photoURL}
-          alt={user.name}
+          alt={persistentState.name}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {user.name.charAt(0).toUpperCase()}
+          {persistentState.name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -84,10 +84,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {user.name}
+            {persistentState.name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user.email}
+            {persistentState.email}
           </Typography>
         </Box>
 

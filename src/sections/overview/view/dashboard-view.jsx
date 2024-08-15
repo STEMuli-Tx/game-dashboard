@@ -20,7 +20,8 @@ import Box from '@mui/material/Box';
 // ----------------------------------------------------------------------
 
 export default function AppView() {
-  const { getQuests, getRoamingNPCs, gameService, isReady, setURL, baseURL } = useGameService();
+  const { getQuests, getRoamingNPCs, gameService, isReady, setURL, baseURL, urlInit } =
+    useGameService();
   const [quests, setQuests] = useState([]);
   const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,12 +29,19 @@ export default function AppView() {
 
   useEffect(() => {
     if (isReady) {
-      setURL(baseURL);
+      // setURL(baseURL);
       fetchQuests();
       fetchRoamingNPCs();
       // Call other functions that depend on gameService being initialized
     }
-  }, [isReady, baseURL]);
+  }, []);
+
+  useEffect(() => {
+    if (urlInit) {
+      fetchQuests();
+      fetchRoamingNPCs();
+    }
+  }, [baseURL, urlInit]);
 
   const fetchQuests = async () => {
     setLoading(true); // Set loading state to true (display loading spinner)

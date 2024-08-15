@@ -23,11 +23,12 @@ export const getNavConfig = (userType) => {
           icon: icon('ic_cart'),
         },
       ];
+
     case 'teacher':
       return [
         {
-          title: 'Learning Management',
-          path: '/learning-management',
+          title: 'User Management',
+          path: '/',
           icon: icon('ic_cart'),
         },
         {

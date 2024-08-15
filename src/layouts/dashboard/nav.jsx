@@ -28,7 +28,7 @@ import Cookies from 'js-cookie';
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav }) {
-  const { user } = useContext(AuthContext);
+  const { persistentState } = useContext(AuthContext);
   const pathname = usePathname();
 
   const upLg = useResponsive('up', 'lg');
@@ -41,7 +41,7 @@ export default function Nav({ openNav, onCloseNav }) {
   }, [pathname]);
 
   // Now dynamically get the navConfig based on user type
-  const dynamicNavConfig = getNavConfig(user ? user.userType : null);
+  const dynamicNavConfig = getNavConfig(persistentState ? persistentState.userType : null);
 
   const renderAccount = (
     <Box
@@ -59,7 +59,7 @@ export default function Nav({ openNav, onCloseNav }) {
       <Avatar src={account.photoURL} alt="photoURL" />
 
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">{user.name}</Typography>
+        <Typography variant="subtitle2">{persistentState.name}</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {account.role}

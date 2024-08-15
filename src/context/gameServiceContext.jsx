@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useContext, createContext, useCallback } from 'react';
 
 import { useRouter } from 'src/routes/hooks';
 
@@ -14,7 +14,8 @@ export const GameServiceProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [gameService, setGameService] = useState(null);
-  const [baseURL, setBaseURL] = useState('https://service-stm.stardevs.xyz/v1'); // Default environment
+  const [baseURL, setBaseURL] = useState(import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL); // Default environment\
+  const [urlInit, setUrlInit] = useState(false);
   const [isReady, setIsReady] = useState(false); // New loading state
   useEffect(() => {
     const handleStorageChange = (e) => {
@@ -45,12 +46,19 @@ export const GameServiceProvider = ({ children }) => {
     }
   }, [token, baseURL, gameService]);
 
-  const setURL = (url) => {
-    if (gameService) {
-      gameService.setBaseURL(url);
-      setBaseURL(url);
-    }
-  };
+  const setURL = useCallback(
+    (url) => {
+      if (gameService && url) {
+        gameService.setBaseURL(url);
+        setBaseURL(url);
+        setUrlInit(true);
+      } else {
+        setUrlInit(false);
+      }
+    },
+    [setUrlInit, setBaseURL, gameService]
+  );
+
   const getQuests = async () => gameService.getQuests();
 
   const markKioskObjectivesComplete = async () => gameService.markKioskObjectivesComplete();
@@ -101,6 +109,7 @@ export const GameServiceProvider = ({ children }) => {
         getNavigatorObjectiveDetails,
         markLearningObjectivesComplete,
         deleteTitlePlayer,
+        urlInit,
       }}
     >
       {children}

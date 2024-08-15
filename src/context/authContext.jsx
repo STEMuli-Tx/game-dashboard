@@ -1,72 +1,71 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-import StemuliNavigator from 'src/utils/stemuli-navigator';
-
-const stemuliNavigator = new StemuliNavigator();
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'src/routes/hooks';
+import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const router = useRouter();
+  const [persistentState, setPersistentState] = useState(() => {
+    const token = localStorage.getItem('token');
+    const providedAt = localStorage.getItem('providedAt');
+    const tokenValidity = localStorage.getItem('tokenValidity');
+    const name = localStorage.getItem('name');
+    const email = localStorage.getItem('email');
+    return { token, providedAt, tokenValidity, name, email };
+  });
 
   useEffect(() => {
-    // Optionally, verify the token's validity with your backend here
+    const token = persistentState.token;
+    if (token) {
+      console.log('Pushing to index');
+      StemuliNavigator.setToken(token);
+      router.push('/');
+    }
+  }, [persistentState]);
 
-    setUserDetails();
-    // Set user state based on persisted data. This might include fetching user details
-    // again or storing user details in localStorage as well.
-    // setUser({
-    //   /* user details */
-    // });
-  }, []);
+  const authenticateUser = (data) => {
+    const userData = {
+      name: `${data.first_name} ${data.last_name}`,
+      userId: data.user_id,
+      email: data.email,
+      userType: data.user_category,
+      tenantId: data.tenant.tenant_id,
+      tenantName: data.tenant.short_name,
+      token: data.access_token,
+      providedAt: data.provided_at,
+      tokenValidity: data.access_token_validity,
+    };
 
-  const setUserDetails = async () => {
-    const response = await stemuliNavigator.getTokenDetails();
-    setUser({
-      name: `${response.first_name} ${response.last_name}`,
-      email: response.email,
-      userType: response.user_category,
+    Object.entries(userData).forEach(([key, value]) => {
+      localStorage.setItem(key, value);
     });
+    StemuliNavigator.setToken(data.access_token);
+    setPersistentState(userData);
   };
 
   // Sign in function to update the user state
   const signIn = async (tenant, email, password) => {
     // Assuming signIn method is available and returns user details upon successful authentication
-    const userData = await stemuliNavigator.signIn(tenant, email, password);
+    const userData = await StemuliNavigator.signIn(tenant, email, password);
 
     if (userData) {
-      setUser({
-        name: `${userData.first_name} ${userData.last_name}`,
-        email: userData.email,
-        userType: userData.user_category,
-      });
-      // Set the access_token in a secure, HttpOnly cookie if using cookies for token management
-
-      localStorage.setItem('isLoggedIn', 'true');
-      setUserDetails();
-
-      return {
-        name: `${userData.first_name} ${userData.last_name}`,
-        email: userData.email,
-        userType: userData.user_category,
-      };
+      authenticateUser(userData);
+      router.push('/');
     }
   };
 
   // Logout function to clear user state
   const logout = () => {
-    setUser(null);
-    localStorage.setItem('isLoggedIn', 'false');
+    console.log('Logging out');
+    localStorage.clear();
+    router.push('/login');
     // Additional logout logic (e.g., clearing tokens)
   };
 
-  const getUser = () => {
-    return user;
-    // Additional logout logic (e.g., clearing tokens)
-  };
-
+  // Additional logout logic (e.g., clearing tokens)
   return (
-    <AuthContext.Provider value={{ user, signIn, logout, getUser }}>
+    <AuthContext.Provider value={{ persistentState, signIn, logout }}>
       {children}
     </AuthContext.Provider>
   );
