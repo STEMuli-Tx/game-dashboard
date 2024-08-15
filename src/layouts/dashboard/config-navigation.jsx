@@ -17,6 +17,11 @@ export const getNavConfig = (userType) => {
           path: '/',
           icon: icon('ic_analytics'),
         },
+        {
+          title: 'Heatmap',
+          path: '/heatmap',
+          icon: icon('ic_cart'),
+        },
       ];
 
     case 'teacher':
@@ -24,6 +29,11 @@ export const getNavConfig = (userType) => {
         {
           title: 'User Management',
           path: '/',
+          icon: icon('ic_cart'),
+        },
+        {
+          title: 'All Heatmap',
+          path: '/all-heatmap',
           icon: icon('ic_cart'),
         },
       ];
