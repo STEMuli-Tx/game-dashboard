@@ -13,7 +13,8 @@ export default class GameService {
   }
 
   async setHeaders() {
-    this.api.defaults.headers['x-api-key'] = `${this.#accessToken}`;
+    this.api.defaults.headers['x-api-key'] = `${import.meta.env.VITE_API_KEY}`;
+    this.api.defaults.headers['x-access-token'] = `${this.#accessToken}`;
   }
 
   setBaseURL(baseURL) {
@@ -27,7 +28,13 @@ export default class GameService {
   }
 
   async getQuests() {
-    const response = await this.api.get('/user-quest');
+    let response = null;
+    if (this.api.defaults.baseURL === import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL) {
+      response = await this.api.get('/user-quest');
+    } else {
+      response = await this.api.get('/quests?all=true&sort=sequence');
+    }
+
     return response.data;
   }
 
@@ -35,9 +42,13 @@ export default class GameService {
     toast.info(`Resetting quests...`, {
       theme: 'colored',
     });
-    const response = await this.api.post('/user-quest/reset', { questIds });
-
-    toast.success(`Reset ${response.data.data.modifiedCount} quests`, {
+    let response = null;
+    if (this.api.defaults.baseURL === import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL) {
+      response = await this.api.post('/user-quest/reset', { questIds });
+    } else {
+      response = await this.api.post('/quests/reset', { questIds });
+    }
+    toast.success(`Reset ${response.data.data.userQuestDeleted} quests`, {
       theme: 'colored',
     });
 
@@ -48,9 +59,15 @@ export default class GameService {
     toast.info(`Marking Quests complete...`, {
       theme: 'colored',
     });
-    const response = await this.api.post('/user-quest/complete-all', { questIds: questIds });
 
-    toast.success(`${response.data.data.modifiedCount} marked completed!`, {
+    let response = null;
+    if (this.api.defaults.baseURL === import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL) {
+      response = await this.api.post('/user-quest/complete-all', { questIds });
+    } else {
+      response = await this.api.post('/quests/complete', { questIds });
+    }
+
+    toast.success(`Quests marked completed!`, {
       theme: 'colored',
     });
 
@@ -75,6 +92,7 @@ export default class GameService {
       });
     }
   }
+
   async resetInventory() {
     toast.info(`Cleaning Inventory...`, {
       theme: 'colored',
@@ -137,16 +155,17 @@ export default class GameService {
   }
 
   async getRoamingNPCs() {
-    const response = await this.api.get('/roaming-npc');
+    const response = await this.api.get('/roaming-npcs?all=true');
 
     return response.data.data;
   }
+
   async resetRoamingNPCs(ids) {
     try {
       toast.info(`Resetting Roaming NPC Dialog...`, {
         theme: 'colored',
       });
-      const response = await this.api.post('/roaming-npc/player/reset', { gameObjectIds: ids });
+      const response = await this.api.post('/roaming-npcs/reset', { ids });
 
       toast.success(`Reset Roaming NPCs`, {
         theme: 'colored',

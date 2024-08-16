@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, createContext, useCallback } fr
 
 import { useRouter } from 'src/routes/hooks';
 
-import GameService from '../utils/game-service';
+import GameService from '../utils/game-service.mjs';
 
 const GameServiceContext = createContext();
 
@@ -19,13 +19,13 @@ export const GameServiceProvider = ({ children }) => {
   const [isReady, setIsReady] = useState(false); // New loading state
   useEffect(() => {
     const handleStorageChange = (e) => {
-      const localToken = localStorage.getItem('access_token');
+      const localToken = localStorage.getItem('token');
       if (localToken) {
         setToken(localToken);
       }
     };
 
-    const localToken = localStorage.getItem('access_token');
+    const localToken = localStorage.getItem('token');
     if (localToken) {
       setToken(localToken);
     }

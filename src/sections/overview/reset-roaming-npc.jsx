@@ -115,8 +115,8 @@ export default function ResetRoamingNPC({
           <TaskItem
             key={task.gameObjectId}
             task={task}
-            checked={selected.includes(task.gameObjectId)}
-            onChange={() => handleClickComplete(task.gameObjectId)}
+            checked={selected.includes(task.id)}
+            onChange={() => handleClickComplete(task.id)}
           />
         ))
       )}
@@ -186,6 +186,17 @@ function TaskItem({ task, checked, onChange }) {
           control={<Checkbox checked={checked} onChange={onChange} />}
           label={task.gameObjectId}
           sx={{ flexGrow: 1, m: 0 }}
+        />
+        {/* Progress Chip */}
+        <Chip
+          label={`${task.progress}%`}
+          color="secondary" // Example color, adjust based on your task.progress value
+          size="small"
+          sx={{
+            ml: 1, // Add some left margin for spacing
+            // Customize the color based on task.progress here
+            // Example: backgroundColor: task.progress > 50 ? 'blue' : 'orange',
+          }}
         />
       </Stack>
     </>
