@@ -168,7 +168,6 @@ function TaskItem({ task, checked, onChange }) {
     handleCloseMenu();
     console.info('DELETE', task.id);
   };
-
   return (
     <>
       <Stack

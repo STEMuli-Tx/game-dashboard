@@ -53,8 +53,13 @@ export default function AppView() {
           data.map((quest) => ({
             id: quest._id,
             name: quest.title,
-            status: quest.userQuest ? quest.userQuest.status : "userQuest doesn't exist",
-            progress: quest.userQuest ? quest.userQuest.progress : "userQuest doesn't exist",
+            status:
+              quest.userProgress === 100
+                ? 'COMPLETE'
+                : quest.userProgress > 0
+                ? 'STARTED'
+                : 'NOT_STARTED',
+            progress: quest.userProgress,
           }))
         );
       else
@@ -62,8 +67,13 @@ export default function AppView() {
           data.data.map((quest) => ({
             id: quest._id,
             name: quest.title,
-            status: quest.userQuest ? quest.userQuest.status : "userQuest doesn't exist",
-            progress: quest.userQuest ? quest.userQuest.progress : "userQuest doesn't exist",
+            status:
+              quest.userProgress === 100
+                ? 'COMPLETE'
+                : quest.userProgress > 0
+                ? 'STARTED'
+                : 'NOT_STARTED',
+            progress: quest.userProgress,
           }))
         );
 
@@ -82,6 +92,7 @@ export default function AppView() {
         data.map((i) => ({
           id: i._id,
           gameObjectId: i.gameObjectId,
+          progress: i.userProgress,
         }))
       ); // Transform and set the quests data
 
