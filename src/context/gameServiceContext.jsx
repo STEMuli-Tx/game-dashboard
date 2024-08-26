@@ -88,6 +88,8 @@ export const GameServiceProvider = ({ children }) => {
   const markLearningObjectivesComplete = async (data) =>
     gameService.markLearningObjectivesComplete(data);
 
+  const getTags = async () => gameService.getTags();
+
   return (
     <GameServiceContext.Provider
       value={{
@@ -109,6 +111,7 @@ export const GameServiceProvider = ({ children }) => {
         getNavigatorObjectiveDetails,
         markLearningObjectivesComplete,
         deleteTitlePlayer,
+        getTags,
         urlInit,
       }}
     >

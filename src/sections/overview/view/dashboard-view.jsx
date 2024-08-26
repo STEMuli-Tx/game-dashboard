@@ -4,18 +4,15 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Button from '@mui/material/Button';
 import ResetQuests from '../reset-quests';
 import MarkQuestsComplete from '../mark-quests-complete';
-import ResetInventory from '../reset-inventory';
 import ResetPlayerLevelData from '../reset-player-level-data';
-import MarkKioskObjectivesComplete from '../reset-kiosk-objectives';
 import { useGameService } from '../../../context/gameServiceContext';
 import ResetRoamingNPC from '../reset-roaming-npc';
 import AddAllInventoryItems from '../add-all-inventory-items';
 import DeleteTitlePlayer from '../delete-player';
 import EnvironmentDropdown from '../environment-dropdown';
-import Box from '@mui/material/Box';
+import Tag from '../tag';
 
 // ----------------------------------------------------------------------
 
@@ -106,6 +103,11 @@ export default function AppView() {
     <Container maxWidth="xl">
       <Grid item xs={6} md={6} lg={6}>
         <EnvironmentDropdown />
+      </Grid>
+      <br />
+      <br />
+      <Grid item xs={6} md={6} lg={6}>
+        <Tag url={baseURL} />
       </Grid>
       <br />
       <br />

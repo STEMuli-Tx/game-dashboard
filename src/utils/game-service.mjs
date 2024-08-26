@@ -221,4 +221,18 @@ export default class GameService {
       });
     }
   }
+
+  async getTags() {
+    try {
+      const response = await this.api.get('/quests/tags/all');
+
+
+      return response.data;
+    } catch (error) {
+      console.error('Failed to load activity details:', error);
+      toast.error(`Failed to load tags for user`, {
+        theme: 'colored',
+      });
+    }
+  }
 }
