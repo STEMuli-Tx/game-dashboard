@@ -59,7 +59,7 @@ export const GameServiceProvider = ({ children }) => {
     [setUrlInit, setBaseURL, gameService]
   );
 
-  const getQuests = async () => gameService.getQuests();
+  const getQuests = async (tags) => gameService.getQuests(tags);
 
   const markKioskObjectivesComplete = async () => gameService.markKioskObjectivesComplete();
 
@@ -88,6 +88,8 @@ export const GameServiceProvider = ({ children }) => {
   const markLearningObjectivesComplete = async (data) =>
     gameService.markLearningObjectivesComplete(data);
 
+  const getTags = async () => gameService.getTags();
+
   return (
     <GameServiceContext.Provider
       value={{
@@ -109,6 +111,7 @@ export const GameServiceProvider = ({ children }) => {
         getNavigatorObjectiveDetails,
         markLearningObjectivesComplete,
         deleteTitlePlayer,
+        getTags,
         urlInit,
       }}
     >

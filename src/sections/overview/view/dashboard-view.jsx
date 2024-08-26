@@ -4,18 +4,15 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Button from '@mui/material/Button';
 import ResetQuests from '../reset-quests';
 import MarkQuestsComplete from '../mark-quests-complete';
-import ResetInventory from '../reset-inventory';
 import ResetPlayerLevelData from '../reset-player-level-data';
-import MarkKioskObjectivesComplete from '../reset-kiosk-objectives';
 import { useGameService } from '../../../context/gameServiceContext';
 import ResetRoamingNPC from '../reset-roaming-npc';
 import AddAllInventoryItems from '../add-all-inventory-items';
 import DeleteTitlePlayer from '../delete-player';
 import EnvironmentDropdown from '../environment-dropdown';
-import Box from '@mui/material/Box';
+import Tag from '../tag';
 
 // ----------------------------------------------------------------------
 
@@ -26,6 +23,7 @@ export default function AppView() {
   const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roamingNPCLoading, setRoamingNPCLoading] = useState(true);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (isReady) {
@@ -34,19 +32,20 @@ export default function AppView() {
       fetchRoamingNPCs();
       // Call other functions that depend on gameService being initialized
     }
-  }, []);
+  }, [tags]);
 
   useEffect(() => {
     if (urlInit) {
       fetchQuests();
       fetchRoamingNPCs();
     }
-  }, [baseURL, urlInit]);
+  }, [baseURL, urlInit, tags]);
 
   const fetchQuests = async () => {
     setLoading(true); // Set loading state to true (display loading spinner)
     try {
-      const data = await getQuests(); // Fetch the quests
+      const idList = tags.map((x) => x._id);
+      const data = await getQuests(idList); // Fetch the quests
 
       if (Array.isArray(data))
         setQuests(
@@ -106,6 +105,11 @@ export default function AppView() {
     <Container maxWidth="xl">
       <Grid item xs={6} md={6} lg={6}>
         <EnvironmentDropdown />
+      </Grid>
+      <br />
+      <br />
+      <Grid item xs={6} md={6} lg={6}>
+        <Tag url={baseURL} tags={tags} setTags={setTags} />
       </Grid>
       <br />
       <br />
