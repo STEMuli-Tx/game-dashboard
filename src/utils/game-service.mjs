@@ -27,12 +27,13 @@ export default class GameService {
     }
   }
 
-  async getQuests() {
+  async getQuests(tags) {
     let response = null;
     if (this.api.defaults.baseURL === import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL) {
       response = await this.api.get('/user-quest');
     } else {
-      response = await this.api.get('/quests?all=true&sort=sequence');
+      const arrStr = encodeURIComponent(JSON.stringify(tags));
+      response = await this.api.get(`/quests?all=true&sort=sequence&allTags=${arrStr}`);
     }
 
     return response.data;
@@ -225,7 +226,6 @@ export default class GameService {
   async getTags() {
     try {
       const response = await this.api.get('/quests/tags/all');
-
 
       return response.data;
     } catch (error) {

@@ -23,6 +23,7 @@ export default function AppView() {
   const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roamingNPCLoading, setRoamingNPCLoading] = useState(true);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (isReady) {
@@ -31,19 +32,20 @@ export default function AppView() {
       fetchRoamingNPCs();
       // Call other functions that depend on gameService being initialized
     }
-  }, []);
+  }, [tags]);
 
   useEffect(() => {
     if (urlInit) {
       fetchQuests();
       fetchRoamingNPCs();
     }
-  }, [baseURL, urlInit]);
+  }, [baseURL, urlInit, tags]);
 
   const fetchQuests = async () => {
     setLoading(true); // Set loading state to true (display loading spinner)
     try {
-      const data = await getQuests(); // Fetch the quests
+      const idList = tags.map((x) => x._id);
+      const data = await getQuests(idList); // Fetch the quests
 
       if (Array.isArray(data))
         setQuests(
@@ -107,7 +109,7 @@ export default function AppView() {
       <br />
       <br />
       <Grid item xs={6} md={6} lg={6}>
-        <Tag url={baseURL} />
+        <Tag url={baseURL} tags={tags} setTags={setTags} />
       </Grid>
       <br />
       <br />

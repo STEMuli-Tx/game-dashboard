@@ -59,7 +59,7 @@ export const GameServiceProvider = ({ children }) => {
     [setUrlInit, setBaseURL, gameService]
   );
 
-  const getQuests = async () => gameService.getQuests();
+  const getQuests = async (tags) => gameService.getQuests(tags);
 
   const markKioskObjectivesComplete = async () => gameService.markKioskObjectivesComplete();
 
