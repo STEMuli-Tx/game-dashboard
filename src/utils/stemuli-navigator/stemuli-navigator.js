@@ -30,6 +30,18 @@ class StemuliNavigator {
         this.#tenantId = import.meta.env.VITE_STEMULI_TENANT_ID;
         this.#tenantKey = import.meta.env.VITE_STEMULI_TENANT_KEY;
         break;
+      case 'LOWNDES':
+        this.#tenantId = import.meta.env.VITE_LOWNDES_TENANT_ID;
+        this.#tenantKey = import.meta.env.VITE_LOWNDES_TENANT_KEY;
+        break;
+      case 'COLQUITT_COUNTY':
+        this.#tenantId = import.meta.env.VITE_COLQUITT_COUNTY_TENANT_ID;
+        this.#tenantKey = import.meta.env.VITE_COLQUITT_COUNTY_TENANT_KEY;
+        break;
+      case 'LIBERTY_COUNTY':
+        this.#tenantId = import.meta.env.VITE_LIBERTY_COUNTY_TENANT_ID;
+        this.#tenantKey = import.meta.env.VITE_LIBERTY_COUNTY_TENANT_KEY;
+        break;
       default:
         throw new Error('Invalid tenant name');
     }
