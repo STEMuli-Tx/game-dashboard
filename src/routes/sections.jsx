@@ -5,10 +5,11 @@ import ProtectedRoute from 'src/routes/components/protected-route';
 import PublicRoute from 'src/routes/components/public-route';
 
 import DashboardLayout from 'src/layouts/dashboard';
+import InventoryManagementPage from '../pages/inventory.page';
 
 export const DashboardPage = lazy(() => import('src/pages/app'));
 export const BlogPage = lazy(() => import('src/pages/blog'));
-export const InventoryPage = lazy(() => import('src/pages/inventory'));
+export const InventoryPage = lazy(() => import('src/pages/inventory.page'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const HeatMapPage = lazy(() => import('src/pages/heatmap'));
@@ -51,6 +52,7 @@ export default function Router() {
         { path: 'account-management/:id/create-user', element: <CreateUserPage /> },
         { path: 'heatmap', element: <HeatMapPage /> },
         { path: 'all-heatmap', element: <AllHeatMapPage /> },
+        { path: 'inventory-management', element: <InventoryManagementPage /> },
       ],
     },
     {

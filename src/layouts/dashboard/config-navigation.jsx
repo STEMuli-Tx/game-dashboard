@@ -36,6 +36,11 @@ export const getNavConfig = (userType) => {
           path: '/all-heatmap',
           icon: icon('ic_cart'),
         },
+        {
+          title: 'Inventory Management',
+          path: '/inventory-management',
+          icon: icon('ic_cart'),
+        },
       ];
     default:
       return []; // Empty or some default navigation for other user types or guests

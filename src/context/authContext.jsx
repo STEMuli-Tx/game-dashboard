@@ -12,7 +12,8 @@ export const AuthProvider = ({ children }) => {
     const tokenValidity = localStorage.getItem('tokenValidity');
     const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
-    return { token, providedAt, tokenValidity, name, email };
+    const userType = localStorage.getItem('userType');
+    return { token, providedAt, tokenValidity, name, email, userType };
   });
 
   useEffect(() => {
