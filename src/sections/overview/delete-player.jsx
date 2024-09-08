@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
-import { useGameService } from '../../context/gameServiceContext';
+import { deletePlayer } from 'src/utils/playfab-service';
 import PropTypes from 'prop-types';
 
 export default function DeleteTitlePlayer() {
-  const { deleteTitlePlayer } = useGameService();
-
   const handleClick = async () => {
     // handle reset action for the item with the given id
-    await deleteTitlePlayer();
+    await deletePlayer();
   };
 
   return (

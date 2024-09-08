@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import { useGameService } from '../../context/gameServiceContext';
-import { reset } from 'numeral';
 
 export default function handleResetPlayerLevelData() {
   const { resetPlayerLevelData } = useGameService();

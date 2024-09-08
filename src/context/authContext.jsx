@@ -14,7 +14,8 @@ export const AuthProvider = ({ children }) => {
     const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
     const sessionTicket = localStorage.getItem('sessionTicket');
-    return { token, providedAt, tokenValidity, name, email, sessionTicket };
+    const playfabId = localStorage.getItem('playfabId');
+    return { token, providedAt, tokenValidity, name, email, sessionTicket, playfabId };
   });
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
   const authenticateUser = async (data) => {
     const loginResult = await loginWithCustomID(data.user_id);
-
+    console.log(loginResult);
     const userData = {
       name: `${data.first_name} ${data.last_name}`,
       userId: data.user_id,
@@ -40,7 +41,8 @@ export const AuthProvider = ({ children }) => {
       token: data.access_token,
       providedAt: data.provided_at,
       tokenValidity: data.access_token_validity,
-      sessionTicket: loginResult.SessionTicket,
+      sessionTicket: loginResult.data.data.SessionTicket,
+      playfabId: loginResult.data.data.PlayFabId,
     };
 
     Object.entries(userData).forEach(([key, value]) => {
