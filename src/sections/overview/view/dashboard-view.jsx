@@ -108,16 +108,45 @@ export default function AppView() {
       </Grid>
       <br />
       <br />
-      <Grid item xs={6} md={6} lg={6}>
-        <Tag url={baseURL} tags={tags} setTags={setTags} />
+      {/* Adjustments for SyncQuests, ResetInventory, and ResetPlayerLevelData */}
+      <Typography variant="h5" style={{ marginBottom: '20px' }}>
+        Player Reset Controls
+      </Typography>
+      <Grid item container xs={12} spacing={3} style={{ textAlign: 'center', marginTop: '20px' }}>
+        <Grid item xs={4}>
+          <Typography variant="body2" style={{ marginBottom: '10px' }}>
+            Add all Inventory Items to Player
+          </Typography>
+          <AddAllInventoryItems />
+        </Grid>
+
+        <Grid item xs={4}>
+          <Typography variant="body2" style={{ marginBottom: '10px' }}>
+            Delete Player Title from Playfab (Resets Inventory and FTUE)
+          </Typography>
+          <DeleteTitlePlayer />
+        </Grid>
+        <Grid item xs={4}>
+          <Typography variant="body2" style={{ marginBottom: '10px' }}>
+            Clears out the picked up items in the level so the player can pick them up again
+          </Typography>
+          <ResetPlayerLevelData />
+        </Grid>
       </Grid>
-      <br />
-      <br />
+
+      <hr />
       <Grid item xs={12}>
         <Typography variant="h5" style={{ marginBottom: '20px' }}>
           🗻 Quests
         </Typography>
       </Grid>
+
+      <Grid item xs={6} md={6} lg={6}>
+        <Tag url={baseURL} tags={tags} setTags={setTags} />
+      </Grid>
+      <br />
+      <br />
+
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={6} style={{ maxHeight: '500px', overflow: 'auto' }}>
           <ResetQuests
@@ -149,29 +178,6 @@ export default function AppView() {
             list={roamingNPCs} // Pass the quests data to AppTasks
             isLoading={roamingNPCLoading}
           />
-        </Grid>
-
-        {/* Adjustments for SyncQuests, ResetInventory, and ResetPlayerLevelData */}
-        <Grid item container xs={12} spacing={3} style={{ textAlign: 'center', marginTop: '20px' }}>
-          <Grid item xs={4}>
-            <Typography variant="body2" style={{ marginBottom: '10px' }}>
-              Add all Inventory Items to Player
-            </Typography>
-            <AddAllInventoryItems />
-          </Grid>
-
-          <Grid item xs={4}>
-            <Typography variant="body2" style={{ marginBottom: '10px' }}>
-              Delete Player Title from Playfab
-            </Typography>
-            <DeleteTitlePlayer />
-          </Grid>
-          <Grid item xs={4}>
-            <Typography variant="body2" style={{ marginBottom: '10px' }}>
-              Clears out the picked up items in the level so the player can pick them up again
-            </Typography>
-            <ResetPlayerLevelData />
-          </Grid>
         </Grid>
       </Grid>
     </Container>

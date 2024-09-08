@@ -21,7 +21,9 @@ function EnvironmentDropdown() {
           label="Select Environment"
           value={baseURL}
         >
-          <MenuItem value={import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL}>Production</MenuItem>
+          <MenuItem value={import.meta.env.VITE_PRODUCTION_GAME_SERVICE_BASE_URL}>
+            Production
+          </MenuItem>
           <MenuItem value={import.meta.env.VITE_PROJECT_GAME_SERVICE_BASE_URL}>Project</MenuItem>
           <MenuItem value={import.meta.env.VITE_DEVELOP_GAME_SERVICE_BASE_URL}>
             Development

@@ -2917,6 +2917,11 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
+playfab-sdk@^2.161.240830:
+  version "2.161.240830"
+  resolved "https://registry.yarnpkg.com/playfab-sdk/-/playfab-sdk-2.161.240830.tgz#00296b51c1262f5fa94dcb3fa01b1d58119dd548"
+  integrity sha512-w/6i4soW/2ZVFKA4L/2gPLaZ2sa1PCLfHKpkC98BgDcB1wOiQUnd81SBsFrr21hX+tuJEdjNH4eIOaPDhfeBxQ==
+
 postcss@^8.4.27:
   version "8.4.31"
   resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.31.tgz"

@@ -14,7 +14,7 @@ export const GameServiceProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [gameService, setGameService] = useState(null);
-  const [baseURL, setBaseURL] = useState(import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL); // Default environment\
+  const [baseURL, setBaseURL] = useState(import.meta.env.VITE_PRODUCTION_GAME_SERVICE_BASE_URL); // Default environment\
   const [urlInit, setUrlInit] = useState(false);
   const [isReady, setIsReady] = useState(false); // New loading state
   useEffect(() => {
