@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'src/routes/hooks';
 import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
+import { loginWithCustomID } from 'src/utils/playfab-service';
 
 export const AuthContext = createContext(null);
 
@@ -12,19 +13,23 @@ export const AuthProvider = ({ children }) => {
     const tokenValidity = localStorage.getItem('tokenValidity');
     const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
-    return { token, providedAt, tokenValidity, name, email };
+    const sessionTicket = localStorage.getItem('sessionTicket');
+    return { token, providedAt, tokenValidity, name, email, sessionTicket };
   });
 
   useEffect(() => {
     const token = persistentState.token;
     if (token) {
       console.log('Pushing to index');
+      console.log('Token:', token);
       StemuliNavigator.setToken(token);
       router.push('/');
     }
   }, [persistentState]);
 
-  const authenticateUser = (data) => {
+  const authenticateUser = async (data) => {
+    const loginResult = await loginWithCustomID(data.user_id);
+
     const userData = {
       name: `${data.first_name} ${data.last_name}`,
       userId: data.user_id,
@@ -35,6 +40,7 @@ export const AuthProvider = ({ children }) => {
       token: data.access_token,
       providedAt: data.provided_at,
       tokenValidity: data.access_token_validity,
+      sessionTicket: loginResult.SessionTicket,
     };
 
     Object.entries(userData).forEach(([key, value]) => {
