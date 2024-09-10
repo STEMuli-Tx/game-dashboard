@@ -35,10 +35,10 @@ export default function MarkQuestsComplete({
     setSelected(tasksCompleted);
   };
 
-  const handleMarkComplete = () => {
-    markQuestsComplete(selected);
+  const handleMarkComplete = async () => {
+    await markQuestsComplete(selected);
     setSelected([]);
-    fetchQuests();
+    await fetchQuests();
   };
 
   const handleSelectAll = () => {
