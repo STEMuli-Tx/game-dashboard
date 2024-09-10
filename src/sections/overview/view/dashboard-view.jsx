@@ -17,8 +17,17 @@ import Tag from '../tag';
 // ----------------------------------------------------------------------
 
 export default function AppView() {
-  const { getQuests, getRoamingNPCs, gameService, isReady, setURL, baseURL, urlInit } =
-    useGameService();
+  const {
+    getQuests,
+    getRoamingNPCs,
+    gameService,
+    isReady,
+    setURL,
+    persistentState,
+    urlInit,
+    resetQuests,
+  } = useGameService();
+  const { baseURL } = persistentState;
   const [quests, setQuests] = useState([]);
   const [roamingNPCs, setRoamingNPCs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,8 +65,8 @@ export default function AppView() {
               quest.userProgress === 100
                 ? 'COMPLETE'
                 : quest.userProgress > 0
-                ? 'STARTED'
-                : 'NOT_STARTED',
+                  ? 'STARTED'
+                  : 'NOT_STARTED',
             progress: quest.userProgress,
           }))
         );
@@ -70,8 +79,8 @@ export default function AppView() {
               quest.userProgress === 100
                 ? 'COMPLETE'
                 : quest.userProgress > 0
-                ? 'STARTED'
-                : 'NOT_STARTED',
+                  ? 'STARTED'
+                  : 'NOT_STARTED',
             progress: quest.userProgress,
           }))
         );
@@ -99,6 +108,11 @@ export default function AppView() {
     } catch (error) {
       console.error('Failed to fetch roaming NPCs:', error);
     }
+  };
+
+  const resetAndFetchQuests = async (ids) => {
+    await resetQuests(ids);
+    await fetchQuests();
   };
 
   return (
@@ -151,6 +165,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={6} style={{ maxHeight: '500px', overflow: 'auto' }}>
           <ResetQuests
             fetchQuests={fetchQuests}
+            resetQuests={resetAndFetchQuests}
             title="🧨 Reset Quests"
             list={quests} // Pass the quests data to AppTasks
             isLoading={loading}

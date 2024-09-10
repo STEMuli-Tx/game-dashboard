@@ -4,8 +4,8 @@ import Box from '@mui/material/Box';
 import { useGameService } from '../../context/gameServiceContext';
 
 function EnvironmentDropdown() {
-  const { setURL, baseURL } = useGameService();
-
+  const { setURL, persistentState } = useGameService();
+  const { baseURL } = persistentState;
   const handleChange = (event) => {
     setURL(event.target.value);
   };

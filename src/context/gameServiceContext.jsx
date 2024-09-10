@@ -14,9 +14,22 @@ export const GameServiceProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [gameService, setGameService] = useState(null);
-  const [baseURL, setBaseURL] = useState(import.meta.env.VITE_PRODUCTION_GAME_SERVICE_BASE_URL); // Default environment\
   const [urlInit, setUrlInit] = useState(false);
   const [isReady, setIsReady] = useState(false); // New loading state
+  const [persistentState, setPersistentState] = useState(() => {
+    let baseURL = localStorage.getItem('baseURL');
+    if (!baseURL) {
+      localStorage.setItem('baseURL', import.meta.env.VITE_DEVELOP_GAME_SERVICE_BASE_URL);
+      baseURL = import.meta.env.VITE_DEVELOP_GAME_SERVICE_BASE_URL;
+    }
+    return { baseURL };
+  });
+
+  const setBaseURL = useCallback((baseURL) => {
+    localStorage.setItem('baseURL', baseURL);
+    setPersistentState((prevState) => ({ ...prevState, baseURL }));
+    return baseURL;
+  }, []);
   useEffect(() => {
     const handleStorageChange = (e) => {
       const localToken = localStorage.getItem('token');
@@ -39,12 +52,12 @@ export const GameServiceProvider = ({ children }) => {
     };
   }, [router]);
   useEffect(() => {
-    console.log('Current environment in context::::::', baseURL);
+    console.log('Current environment in context::::::', persistentState.baseURL);
     if (token && !gameService) {
-      setGameService(new GameService(token, baseURL));
+      setGameService(new GameService(token, persistentState.baseURL));
       setIsReady(true); // Set isReady to true when gameService is initialized
     }
-  }, [token, baseURL, gameService]);
+  }, [token, persistentState.baseURL, gameService]);
 
   const setURL = useCallback(
     (url) => {
@@ -94,7 +107,7 @@ export const GameServiceProvider = ({ children }) => {
     <GameServiceContext.Provider
       value={{
         setURL,
-        baseURL,
+        persistentState,
         gameService,
         isReady,
         getQuests,

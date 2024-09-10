@@ -18,8 +18,8 @@ import Skeleton from '@mui/material/Skeleton';
 
 // ----------------------------------------------------------------------
 
-export default function ResetQuests({ title, subheader, list, fetchQuests, isLoading, ...other }) {
-  const { resetQuests } = useGameService();
+export default function ResetQuests({ title, subheader, list, fetchQuests, isLoading, resetQuests, ...other }) {
+
   const [selected, setSelected] = useState([]);
 
   const [isExploding, setIsExploding] = useState(false);
