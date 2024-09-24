@@ -34,6 +34,10 @@ function EnvironmentDropdown() {
             break;
         }
 
+        if (localStorage.getItem('userType') === 'teacher') {
+          url += '&all_students=true';
+        }
+
         console.log(`Fetching image from: ${url}`);
         const response = await fetch(url, {
           method: 'GET',

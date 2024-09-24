@@ -32,8 +32,8 @@ export const getNavConfig = (userType) => {
           icon: icon('ic_cart'),
         },
         {
-          title: 'All Heatmap',
-          path: '/all-heatmap',
+          title: 'Heatmap',
+          path: '/heatmap',
           icon: icon('ic_cart'),
         },
       ];
