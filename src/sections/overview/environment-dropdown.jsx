@@ -11,8 +11,26 @@ function EnvironmentDropdown() {
   const heatmapURL =
     'https://us-central1-stemuli-game.cloudfunctions.net/generate_heatmap_function/';
 
+  const resetHeatmaps = () => {
+    const event = new StorageEvent('storage', {
+      key: `reset_heatmaps`,
+    });
+
+    window.dispatchEvent(event);
+  };
+
+  const failedHeatmap = () => {
+    resetHeatmaps();
+
+    const event = new StorageEvent('storage', {
+      key: `failed_heatmap`,
+    });
+
+    window.dispatchEvent(event);
+  };
+
   const fetchImage = useCallback(async () => {
-    if (imagesFetched) return; // Prevent duplicate fetches
+    resetHeatmaps();
 
     try {
       const levelNames = ['SUBWAY_STATION', 'TUTORIAL_TRAIN'];
@@ -30,7 +48,7 @@ function EnvironmentDropdown() {
             url += '&environment=dev';
             break;
           default:
-            url += '&environment=dev';
+            url += '&environment=proj';
             break;
         }
 
@@ -50,18 +68,24 @@ function EnvironmentDropdown() {
         const localUrl = URL.createObjectURL(imageBlob);
         console.log(`Fetched image for ${levelName}: ${localUrl}`);
         localStorage.setItem(`${levelName}_heatmap`, localUrl);
+
+        const event = new StorageEvent('storage', {
+          key: `${levelName}_heatmap`,
+          newValue: localUrl,
+        });
+
+        window.dispatchEvent(event);
       });
       await Promise.all(fetchPromises);
-      setImagesFetched(true); // Mark images as fetched
     } catch (error) {
       console.error('Error fetching image:', error);
+      failedHeatmap();
     }
   }, [baseURL, imagesFetched]);
 
   const handleChange = (event) => {
     setURL(event.target.value);
-    setImagesFetched(false); // Reset fetch state on environment change
-    fetchImage();
+    fetchImage().then((r) => console.log('Image fetched'));
   };
 
   return (

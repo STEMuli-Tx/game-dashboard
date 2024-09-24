@@ -12,25 +12,39 @@ export default function AllHeatMapPage() {
   const [tutorialHeatmapUrl, setTutorialHeatmapUrl] = useState(
     () => localStorage.getItem('TUTORIAL_TRAIN_heatmap') || ''
   );
+  const [loadingStatus, setLoadingStatus] = useState('loading'); // New state for loading status
 
   const handleOpacityChange = (event, newValue) => {
     setOverlayOpacity(newValue);
   };
 
+  const handleStorageChange = (event) => {
+    console.log('Storage event detected:', event);
+
+    if (event.key === 'SUBWAY_STATION_heatmap') {
+      setStationHeatmapUrl(event.newValue || '');
+      setLoadingStatus('loaded');
+      console.log('Subway Station Heatmap Changed');
+    }
+    if (event.key === 'TUTORIAL_TRAIN_heatmap') {
+      setTutorialHeatmapUrl(event.newValue || '');
+      setLoadingStatus('loaded');
+      console.log('Tutorial Train Heatmap Changed');
+    }
+    if (event.key === 'reset_heatmaps') {
+      setTutorialHeatmapUrl('');
+      setStationHeatmapUrl('');
+      setLoadingStatus('loading');
+      console.log('Heatmaps Reset');
+    }
+    if (event.key === 'failed_heatmap') {
+      setLoadingStatus('failed');
+      console.log('Failed to fetch Heatmap');
+    }
+  };
+
   useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === 'SUBWAY_STATION_heatmap') {
-        setStationHeatmapUrl(event.newValue || '');
-        console.log('Subway Station Heatmap Changed');
-      }
-      if (event.key === 'TUTORIAL_TRAIN_heatmap') {
-        setTutorialHeatmapUrl(event.newValue || '');
-        console.log('Tutorial Train Heatmap Changed');
-      }
-    };
-
     window.addEventListener('storage', handleStorageChange);
-
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
@@ -72,7 +86,7 @@ export default function AllHeatMapPage() {
                   style={{ opacity: overlayOpacity }}
                 />
               ) : (
-                <p>Loading...</p>
+                <p>{loadingStatus === 'failed' ? 'Failed To Load' : 'Loading...'}</p>
               )}
             </div>
           </div>
@@ -89,7 +103,7 @@ export default function AllHeatMapPage() {
                   style={{ opacity: overlayOpacity }}
                 />
               ) : (
-                <p>Loading...</p>
+                <p>{loadingStatus === 'failed' ? 'Failed To Load' : 'Loading...'}</p>
               )}
             </div>
           </div>
