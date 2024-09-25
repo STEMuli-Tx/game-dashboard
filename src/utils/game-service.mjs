@@ -2,19 +2,33 @@ import axios from 'axios';
 
 import { toast } from 'react-toastify';
 
-export default class GameService {
+ class GameService {
   #accessToken;
 
-  constructor(accessToken, baseURL) {
-    this.#accessToken = accessToken;
-    this.setBaseURL(baseURL);
+  constructor() {
+    if (!GameService.instance) {
+      this.api = axios.create({
 
-    this.setHeaders();
+      });
+      GameService.instance = this;
+    }
+    this.setAPIKey();
   }
 
-  async setHeaders() {
+   setURL(url) {
+    if (this.api && url) {
+      this.api.defaults.baseURL = url;
+    }
+  }
+
+  setToken(token) {
+   this.api.defaults.headers['x-access-token'] = token;
+ }
+
+  async setAPIKey() {
+    if(this.api) {
     this.api.defaults.headers['x-api-key'] = `${import.meta.env.VITE_API_KEY}`;
-    this.api.defaults.headers['x-access-token'] = `${this.#accessToken}`;
+    }
   }
 
   setBaseURL(baseURL) {
@@ -236,3 +250,8 @@ export default class GameService {
     }
   }
 }
+
+const instance = new GameService();
+Object.freeze(instance);
+
+export default instance;

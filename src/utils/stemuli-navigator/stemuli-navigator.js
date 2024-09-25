@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 
 class StemuliNavigator {
@@ -71,7 +72,11 @@ class StemuliNavigator {
 
       return response.data;
     } catch (error) {
-      console.error('Error during sign-in:', error);
+      if (error.response && error.response.status === 401) {
+        toast.error(error.response.data.message, { theme: 'colored' });
+      } else {
+        console.error('Error during sign-in:', error);
+      }
       throw error;
     }
   }

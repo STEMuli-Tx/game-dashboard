@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useRouter } from 'src/routes/hooks';
 import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
 import { loginWithCustomID } from 'src/utils/playfab-service';
-
+import GameService from '../utils/game-service.mjs';
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -24,10 +24,22 @@ export const AuthProvider = ({ children }) => {
       console.log('Pushing to index');
       console.log('Token:', token);
       StemuliNavigator.setToken(token);
+      GameService.setToken(token);
       router.push('/');
     }
   }, [persistentState]);
 
+  const clearPersistentState = () => {
+    setPersistentState({
+      token: '',
+      providedAt: '',
+      tokenValidity: '',
+      name: '',
+      email: '',
+      sessionTicket: '',
+      playfabId: '',
+    });
+  };
   const authenticateUser = async (data) => {
     const loginResult = await loginWithCustomID(data.user_id);
     console.log(loginResult);
@@ -67,6 +79,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     console.log('Logging out');
     localStorage.clear();
+    clearPersistentState();
+    GameService.setToken('');
     router.push('/login');
     // Additional logout logic (e.g., clearing tokens)
   };

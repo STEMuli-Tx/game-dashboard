@@ -13,7 +13,6 @@ export function useGameService() {
 export const GameServiceProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
-  const [gameService, setGameService] = useState(null);
   const [urlInit, setUrlInit] = useState(false);
   const [isReady, setIsReady] = useState(false); // New loading state
   const [persistentState, setPersistentState] = useState(() => {
@@ -53,62 +52,62 @@ export const GameServiceProvider = ({ children }) => {
   }, [router]);
   useEffect(() => {
     console.log('Current environment in context::::::', persistentState.baseURL);
-    if (token && !gameService) {
-      setGameService(new GameService(token, persistentState.baseURL));
+    if (token) {
+      GameService.setURL(persistentState.baseURL);
       setIsReady(true); // Set isReady to true when gameService is initialized
     }
-  }, [token, persistentState.baseURL, gameService]);
+  }, [token, persistentState.baseURL]);
 
   const setURL = useCallback(
     (url) => {
-      if (gameService && url) {
-        gameService.setBaseURL(url);
+      if (url) {
+        GameService.setBaseURL(url);
         setBaseURL(url);
         setUrlInit(true);
       } else {
         setUrlInit(false);
       }
     },
-    [setUrlInit, setBaseURL, gameService]
+    [setUrlInit, setBaseURL]
   );
 
-  const getQuests = async (tags) => gameService.getQuests(tags);
+  const getQuests = async (tags) => GameService.getQuests(tags);
 
-  const markKioskObjectivesComplete = async () => gameService.markKioskObjectivesComplete();
+  const markKioskObjectivesComplete = async () => GameService.markKioskObjectivesComplete();
 
-  const resetQuests = async (questIds) => gameService.resetQuests(questIds);
+  const resetQuests = async (questIds) => GameService.resetQuests(questIds);
 
-  const markQuestsComplete = async (questIds) => gameService.markQuestsComplete(questIds);
+  const markQuestsComplete = async (questIds) => GameService.markQuestsComplete(questIds);
 
-  const resetInventory = async () => gameService.resetInventory();
+  const resetInventory = async () => GameService.resetInventory();
 
-  const addAllInventoryItems = async () => gameService.addAllInventoryItems();
+  const addAllInventoryItems = async () => GameService.addAllInventoryItems();
 
-  const syncQuest = async () => gameService.syncQuest();
+  const syncQuest = async () => GameService.syncQuest();
 
-  const resetPlayerLevelData = async () => gameService.resetPlayerLevelData();
+  const resetPlayerLevelData = async () => GameService.resetPlayerLevelData();
 
-  const deleteTitlePlayer = async () => gameService.deleteTitlePlayer();
+  const deleteTitlePlayer = async () => GameService.deleteTitlePlayer();
 
-  const getRoamingNPCs = async () => gameService.getRoamingNPCs();
+  const getRoamingNPCs = async () => GameService.getRoamingNPCs();
 
-  const resetRoamingNPCs = async (ids) => gameService.resetRoamingNPCs(ids);
+  const resetRoamingNPCs = async (ids) => GameService.resetRoamingNPCs(ids);
 
-  const getStudents = async () => gameService.getStudents();
+  const getStudents = async () => GameService.getStudents();
 
-  const getNavigatorObjectiveDetails = async () => gameService.getNavigatorObjectiveDetails();
+  const getNavigatorObjectiveDetails = async () => GameService.getNavigatorObjectiveDetails();
 
   const markLearningObjectivesComplete = async (data) =>
-    gameService.markLearningObjectivesComplete(data);
+    GameService.markLearningObjectivesComplete(data);
 
-  const getTags = async () => gameService.getTags();
+  const getTags = async () => GameService.getTags();
 
   return (
     <GameServiceContext.Provider
       value={{
         setURL,
         persistentState,
-        gameService,
+        GameService,
         isReady,
         getQuests,
         resetQuests,
