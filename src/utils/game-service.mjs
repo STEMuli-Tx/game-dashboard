@@ -33,7 +33,7 @@ export default class GameService {
       response = await this.api.get('/user-quest');
     } else {
       const arrStr = encodeURIComponent(JSON.stringify(tags));
-      response = await this.api.get(`/quests?all=true&sort=sequence&allTags=${arrStr}`);
+      response = await this.api.get(`/quests?all=true&sort=sequence`);
     }
 
     return response.data;

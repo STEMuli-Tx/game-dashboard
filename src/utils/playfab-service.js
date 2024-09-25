@@ -8,7 +8,7 @@ export function loginWithCustomID(customId) {
   try {
     const data = JSON.stringify({
       CustomId: customId,
-      CreateAccount: false,
+      CreateAccount: true,
       TitleId: titleId,
     });
 
