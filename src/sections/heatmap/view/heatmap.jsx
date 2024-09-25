@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Typography, Slider } from '@mui/material';
 import trainImage from 'src/components/images/subway_train_map.png';
 import stationImage from 'src/components/images/subway_station_map.png';
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import EnvironmentDropdown from 'src/sections/overview/environment-dropdown';
 
 export default function AllHeatMapPage() {
   const [overlayOpacity, setOverlayOpacity] = useState(1); // Default opacity is 1
@@ -15,62 +12,47 @@ export default function AllHeatMapPage() {
   const [tutorialHeatmapUrl, setTutorialHeatmapUrl] = useState(
     () => localStorage.getItem('TUTORIAL_TRAIN_heatmap') || ''
   );
-
-  const heatmapURL =
-    'https://us-central1-stemuli-game.cloudfunctions.net/generate_heatmap_function/';
+  const [loadingStatus, setLoadingStatus] = useState('loading'); // New state for loading status
 
   const handleOpacityChange = (event, newValue) => {
     setOverlayOpacity(newValue);
   };
 
+  const handleStorageChange = (event) => {
+    console.log('Storage event detected:', event);
+
+    if (event.key === 'SUBWAY_STATION_heatmap') {
+      setStationHeatmapUrl(event.newValue || '');
+      setLoadingStatus('loaded');
+      console.log('Subway Station Heatmap Changed');
+    }
+    if (event.key === 'TUTORIAL_TRAIN_heatmap') {
+      setTutorialHeatmapUrl(event.newValue || '');
+      setLoadingStatus('loaded');
+      console.log('Tutorial Train Heatmap Changed');
+    }
+    if (event.key === 'reset_heatmaps') {
+      setTutorialHeatmapUrl('');
+      setStationHeatmapUrl('');
+      setLoadingStatus('loading');
+      console.log('Heatmaps Reset');
+    }
+    if (event.key === 'failed_heatmap') {
+      setLoadingStatus('failed');
+      console.log('Failed to fetch Heatmap');
+    }
+  };
+
   useEffect(() => {
-    const handleStorageChange = () => {
-      setStationHeatmapUrl(localStorage.getItem('SUBWAY_STATION_heatmap') || '');
-      setTutorialHeatmapUrl(localStorage.getItem('TUTORIAL_TRAIN_heatmap') || '');
-    };
-
     window.addEventListener('storage', handleStorageChange);
-
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
-  useEffect(() => {
-    fetchImage();
-  }, []);
-
-  const fetchImage = async () => {
-    try {
-      const levelNames = ['SUBWAY_STATION', 'TUTORIAL_TRAIN'];
-      const fetchPromises = levelNames.map(async (levelName) => {
-        const url = `${heatmapURL}generate_heatmap?level_name=${levelName}&access_token=${localStorage.getItem(
-          'token'
-        )}`;
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        if (!response.ok) throw new Error(`Network response was not ok for ${levelName}`);
-        const imageBlob = await response.blob();
-        const localUrl = URL.createObjectURL(imageBlob);
-        localStorage.setItem(`${levelName}_heatmap`, localUrl);
-        if (levelName === 'SUBWAY_STATION') {
-          setStationHeatmapUrl(localUrl);
-        } else if (levelName === 'TUTORIAL_TRAIN') {
-          setTutorialHeatmapUrl(localUrl);
-        }
-      });
-      await Promise.all(fetchPromises);
-    } catch (error) {
-      console.error('Error fetching image:', error);
-    }
-  };
-
   return (
     <Container className="container-center">
+      <EnvironmentDropdown />
       <Typography variant="h3" mb={5}>
         Heat Map
       </Typography>
@@ -104,7 +86,7 @@ export default function AllHeatMapPage() {
                   style={{ opacity: overlayOpacity }}
                 />
               ) : (
-                <p>Loading...</p>
+                <p>{loadingStatus === 'failed' ? 'Failed To Load' : 'Loading...'}</p>
               )}
             </div>
           </div>
@@ -121,7 +103,7 @@ export default function AllHeatMapPage() {
                   style={{ opacity: overlayOpacity }}
                 />
               ) : (
-                <p>Loading...</p>
+                <p>{loadingStatus === 'failed' ? 'Failed To Load' : 'Loading...'}</p>
               )}
             </div>
           </div>

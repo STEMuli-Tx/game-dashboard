@@ -12,7 +12,6 @@ export const InventoryPage = lazy(() => import('src/pages/inventory'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const HeatMapPage = lazy(() => import('src/pages/heatmap'));
-export const AllHeatMapPage = lazy(() => import('src/pages/all-heatmap'));
 export const LearningManagementPage = lazy(() => import('src/pages/learning-management'));
 export const AccountManagementPage = lazy(() => import('src/pages/account-management'));
 export const UserManagementPage = lazy(() => import('src/pages/user-management'));
@@ -50,7 +49,6 @@ export default function Router() {
         { path: 'user-management', element: <UserManagementPage /> },
         { path: 'account-management/:id/create-user', element: <CreateUserPage /> },
         { path: 'heatmap', element: <HeatMapPage /> },
-        { path: 'all-heatmap', element: <AllHeatMapPage /> },
       ],
     },
     {
