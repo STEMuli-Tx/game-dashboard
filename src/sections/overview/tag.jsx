@@ -67,7 +67,6 @@ export default function Tag({ url }) {
   };
 
   const handleAddTags = () => {
-    setSelectedTags([...selectedTags]);
     const ids = selectedTags.map((tag) => tag._id);
     updateUser({ tags: ids });
     setOpen(false);
@@ -80,11 +79,25 @@ export default function Tag({ url }) {
     setSelectedTags(typeof value === 'string' ? value.split(',') : value);
   };
 
+  const handleDeleteTag = (tagId) => {
+    setSelectedTags((prev) => {
+      const updatedTags = prev.filter((t) => t._id !== tagId);
+      const ids = updatedTags.map((tag) => tag._id);
+      updateUser({ tags: ids });
+      return updatedTags;
+    });
+  };
+
   return (
     <Stack direction="row" spacing={1}>
       <h3>Tags for User</h3>
       {selectedTags.map((tag) => (
-        <Chip key={tag._id} label={tag.title} color="success" />
+        <Chip
+          key={tag._id}
+          label={tag.title}
+          color="success"
+          onDelete={() => handleDeleteTag(tag._id)}
+        />
       ))}
       <Button variant="outlined" onClick={handleClickOpen}>
         + Add Tags
