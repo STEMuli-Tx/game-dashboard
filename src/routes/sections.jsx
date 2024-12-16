@@ -17,6 +17,7 @@ export const LearningManagementPage = lazy(() => import('src/pages/learning-mana
 export const AccountManagementPage = lazy(() => import('src/pages/account-management'));
 export const UserManagementPage = lazy(() => import('src/pages/user-management'));
 export const CreateUserPage = lazy(() => import('src/pages/create-user'));
+export const PlayfabPage = lazy(() => import('src/pages/playfab'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 export default function Router() {
@@ -27,7 +28,7 @@ export default function Router() {
       return <DashboardPage />;
     }
     if (localStorage.getItem('userType') === 'teacher') {
-      return <UserManagementPage />;
+      return <PlayfabPage />;
     }
     console.log('No user match, sending to login');
     return <Navigate to="/login" replace />;
@@ -47,6 +48,7 @@ export default function Router() {
       children: [
         { path: '/', element: getDefaultRoute() },
         { path: 'dashboard', element: <DashboardPage /> },
+        { path: 'playfab', element: <PlayfabPage /> },
         { path: 'user-management', element: <UserManagementPage /> },
         { path: 'account-management/:id/create-user', element: <CreateUserPage /> },
         { path: 'heatmap', element: <HeatMapPage /> },

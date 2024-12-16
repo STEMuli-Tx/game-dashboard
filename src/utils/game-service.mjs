@@ -239,16 +239,46 @@ import { toast } from 'react-toastify';
 
   async getTags() {
     try {
-      const response = await this.api.get('/quests/tags/all');
+      const response = await this.api.get('/user/tags');
 
-      return response.data;
+      return response.data
     } catch (error) {
-      console.error('Failed to load activity details:', error);
-      toast.error(`Failed to load tags for user`, {
+
+      toast.error(`Failed to load user tags`, {
         theme: 'colored',
       });
     }
   }
+
+   async getAvailableTags() {
+     try {
+       const response = await this.api.get('/tags?all=true');
+
+       return response.data
+     } catch (error) {
+
+       toast.error(`Failed to load user tags`, {
+         theme: 'colored',
+       });
+     }
+   }
+
+   async updateUser(payload) {
+     try {
+       const response = await this.api.patch('/user', payload);
+
+       toast.success(`User tags updated`, {
+         theme: 'colored',
+       });
+
+       return response.data
+     } catch (error) {
+
+       toast.error(`Failed to add user tags`, {
+         theme: 'colored',
+       });
+     }
+   }
 }
 
 const instance = new GameService();

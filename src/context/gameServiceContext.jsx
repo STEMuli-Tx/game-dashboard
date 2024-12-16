@@ -102,6 +102,9 @@ export const GameServiceProvider = ({ children }) => {
 
   const getTags = async () => GameService.getTags();
 
+  const getAvailableTags = async () => GameService.getAvailableTags();
+  const updateUser = async (payload) => GameService.updateUser(payload);
+
   return (
     <GameServiceContext.Provider
       value={{
@@ -124,6 +127,8 @@ export const GameServiceProvider = ({ children }) => {
         markLearningObjectivesComplete,
         deleteTitlePlayer,
         getTags,
+        getAvailableTags,
+        updateUser,
         urlInit,
       }}
     >

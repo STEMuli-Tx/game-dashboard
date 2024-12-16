@@ -26,8 +26,13 @@ export const getNavConfig = (userType) => {
 
     case 'teacher':
       return [
+        // {
+        //   title: 'User Management',
+        //   path: '/',
+        //   icon: icon('ic_cart'),
+        // },
         {
-          title: 'User Management',
+          title: 'Playfab',
           path: '/',
           icon: icon('ic_cart'),
         },
