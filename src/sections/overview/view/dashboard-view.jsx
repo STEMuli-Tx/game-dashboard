@@ -13,6 +13,7 @@ import AddAllInventoryItems from '../add-all-inventory-items';
 import DeleteTitlePlayer from '../delete-player';
 import EnvironmentDropdown from '../environment-dropdown';
 import Tag from '../tag';
+import Button from '@mui/material/Button';
 
 // ----------------------------------------------------------------------
 
@@ -90,7 +91,19 @@ export default function AppView() {
       console.error('Failed to fetch quests:', error);
     }
   };
-
+  const downloadUserQuests = async () => {
+    const idList = tags.map((x) => x._id);
+    const data = await getQuests(idList);
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'user_quests.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const fetchRoamingNPCs = async () => {
     setRoamingNPCLoading(true); // Set loading state to true (display loading spinner)
     try {
@@ -154,6 +167,15 @@ export default function AppView() {
           🗻 Quests
         </Typography>
       </Grid>
+
+      <Grid item xs={12}>
+        <Button variant="contained" color="primary" onClick={downloadUserQuests}>
+          Download User Quests
+        </Button>
+      </Grid>
+
+      <br />
+      <br />
 
       <Grid item xs={6} md={6} lg={6}>
         <Tag url={baseURL} tags={tags} setTags={setTags} />
