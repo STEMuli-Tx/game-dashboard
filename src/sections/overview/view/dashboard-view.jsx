@@ -99,7 +99,9 @@ export default function AppView() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'user_quests.json';
+    const email = localStorage.getItem('email');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    link.download = `user_quests_${email}_${timestamp}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
