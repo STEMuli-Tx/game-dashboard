@@ -59,23 +59,33 @@ export default function AppView() {
 
       if (Array.isArray(data))
         setQuests(
-          data.map((quest) => ({
-            id: quest._id,
-            name: quest.title,
-            status:
-              quest.userProgress === 100
-                ? 'COMPLETE'
-                : quest.userProgress > 0
-                  ? 'STARTED'
-                  : 'NOT_STARTED',
-            progress: quest.userProgress,
-          }))
+          data.map((quest) => {
+            return {
+              id: quest._id,
+              name: quest.title,
+              subTitle:
+                quest.objectives?.[0]?.title && quest.objectives?.[0]?.interactions[0]?.metadata
+                  ? quest.objectives?.[0]?.title
+                  : '',
+              status:
+                quest.userProgress === 100
+                  ? 'COMPLETE'
+                  : quest.userProgress > 0
+                    ? 'STARTED'
+                    : 'NOT_STARTED',
+              progress: quest.userProgress,
+            };
+          })
         );
       else
         setQuests(
           data.data.map((quest) => ({
             id: quest._id,
             name: quest.title,
+            subTitle:
+              quest.objectives?.[0]?.title && quest.objectives?.[0]?.interactions[0]?.metadata
+                ? quest.objectives?.[0]?.title
+                : '',
             status:
               quest.userProgress === 100
                 ? 'COMPLETE'

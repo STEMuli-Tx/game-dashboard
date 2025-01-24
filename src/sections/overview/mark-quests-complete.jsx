@@ -185,7 +185,7 @@ function TaskItem({ task, checked, onChange }) {
       >
         <FormControlLabel
           control={<Checkbox checked={checked} onChange={onChange} />}
-          label={task.name}
+          label={task.subTitle ? task.subTitle : task.name}
           sx={{ flexGrow: 1, m: 0 }}
         />
         {/* Status Chip */}

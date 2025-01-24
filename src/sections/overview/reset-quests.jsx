@@ -18,8 +18,15 @@ import Skeleton from '@mui/material/Skeleton';
 
 // ----------------------------------------------------------------------
 
-export default function ResetQuests({ title, subheader, list, fetchQuests, isLoading, resetQuests, ...other }) {
-
+export default function ResetQuests({
+  title,
+  subheader,
+  list,
+  fetchQuests,
+  isLoading,
+  resetQuests,
+  ...other
+}) {
   const [selected, setSelected] = useState([]);
 
   const [isExploding, setIsExploding] = useState(false);
@@ -68,7 +75,6 @@ export default function ResetQuests({ title, subheader, list, fetchQuests, isLoa
 
   // Check if there are any selected tasks
   const isResetDisabled = selected.length === 0;
-
   return (
     <Card {...other}>
       {/* <div style={{ transform: spring.scale }}>💥</div> */}
@@ -188,7 +194,7 @@ function TaskItem({ task, checked, onChange }) {
       >
         <FormControlLabel
           control={<Checkbox checked={checked} onChange={onChange} />}
-          label={task.name}
+          label={task.subTitle ? task.subTitle : task.name}
           sx={{ flexGrow: 1, m: 0 }}
         />
         {/* Status Chip */}
