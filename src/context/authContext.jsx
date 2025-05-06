@@ -20,14 +20,16 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = persistentState.token;
+    console.log('TOKEN0:', token);
     if (token) {
-      console.log('Pushing to index');
-      console.log('Token:', token);
-      StemuliNavigator.setToken(token);
       GameService.setToken(token);
       router.push('/');
     }
   }, [persistentState]);
+
+  useEffect(() => {
+    GameService.setURL(localStorage.getItem('baseURL'));
+  }, [localStorage.getItem('baseURL')]);
 
   const clearPersistentState = () => {
     setPersistentState({
@@ -41,36 +43,35 @@ export const AuthProvider = ({ children }) => {
     });
   };
   const authenticateUser = async (data) => {
-    const loginResult = await loginWithCustomID(data.user_id);
-    console.log(loginResult);
+    // const loginResult = await loginWithCustomID(data.user_id);
     const userData = {
-      name: `${data.first_name} ${data.last_name}`,
-      userId: data.user_id,
-      email: data.email,
-      userType: data.user_category,
-      tenantId: data.tenant.tenant_id,
-      tenantName: data.tenant.short_name,
-      token: data.access_token,
-      providedAt: data.provided_at,
-      tokenValidity: data.access_token_validity,
-      sessionTicket: loginResult.data.data.SessionTicket,
-      playfabId: loginResult.data.data.PlayFabId,
+      name: `test`,
+      userId: 'id',
+      email: 'email',
+      userType: 'student',
+      tenantId: '668e35e9829f6fbeacfe838c',
+      tenantName: 'stemuli',
+      token: data.accessToken,
+      providedAt: '12/10/2023, 12:00:00 AM',
+      playfabId:
+        'MjoxNzMwMjM1NjE2MDA4OmFkNmZiNGY1LTI1YmItNGI2Zi05NGYzLTE2ODllMGEzMGMxYzo6YzczMzkxMjQtMTI2Yy00NGVmLTk5OGMtMzM4ODNlYTA3NmRm',
     };
 
     Object.entries(userData).forEach(([key, value]) => {
       localStorage.setItem(key, value);
     });
-    StemuliNavigator.setToken(data.access_token);
+
+    console.log(persistentState);
     setPersistentState(userData);
   };
 
   // Sign in function to update the user state
   const signIn = async (tenant, email, password) => {
     // Assuming signIn method is available and returns user details upon successful authentication
-    const userData = await StemuliNavigator.signIn(tenant, email, password);
 
-    if (userData) {
-      authenticateUser(userData);
+    const user = await GameService.signIn(email, password);
+    if (user) {
+      await authenticateUser(user);
       router.push('/');
     }
   };
