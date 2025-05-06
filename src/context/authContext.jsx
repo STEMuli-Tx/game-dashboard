@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-
     const token = persistentState.token;
     console.log('TOKEN0:', token);
     if (token) {
@@ -29,10 +28,8 @@ export const AuthProvider = ({ children }) => {
   }, [persistentState]);
 
   useEffect(() => {
-
-GameService.setURL(localStorage.getItem('baseURL'));
+    GameService.setURL(localStorage.getItem('baseURL'));
   }, [localStorage.getItem('baseURL')]);
-
 
   const clearPersistentState = () => {
     setPersistentState({
@@ -49,23 +46,22 @@ GameService.setURL(localStorage.getItem('baseURL'));
     // const loginResult = await loginWithCustomID(data.user_id);
     const userData = {
       name: `test`,
-      userId: "id",
-      email: "email",
-      userType: "student",
-      tenantId: "668e35e9829f6fbeacfe838c",
-      tenantName: "stemuli",
+      userId: 'id',
+      email: 'email',
+      userType: 'student',
+      tenantId: '668e35e9829f6fbeacfe838c',
+      tenantName: 'stemuli',
       token: data.accessToken,
-      providedAt: "12/10/2023, 12:00:00 AM",
-      tokenValidity: "MjoxNzMwMjM1NjE2MDA4OmFkNmZiNGY1LTI1YmItNGI2Zi05NGYzLTE2ODllMGEzMGMxYzo6YzczMzkxMjQtMTI2Yy00NGVmLTk5OGMtMzM4ODNlYTA3NmRm",
-      sessionTicket: "MjoxNzMwMjM1NjE2MDA4OmFkNmZiNGY1LTI1YmItNGI2Zi05NGYzLTE2ODllMGEzMGMxYzo6YzczMzkxMjQtMTI2Yy00NGVmLTk5OGMtMzM4ODNlYTA3NmRm",
-      playfabId: "MjoxNzMwMjM1NjE2MDA4OmFkNmZiNGY1LTI1YmItNGI2Zi05NGYzLTE2ODllMGEzMGMxYzo6YzczMzkxMjQtMTI2Yy00NGVmLTk5OGMtMzM4ODNlYTA3NmRm",
+      providedAt: '12/10/2023, 12:00:00 AM',
+      playfabId:
+        'MjoxNzMwMjM1NjE2MDA4OmFkNmZiNGY1LTI1YmItNGI2Zi05NGYzLTE2ODllMGEzMGMxYzo6YzczMzkxMjQtMTI2Yy00NGVmLTk5OGMtMzM4ODNlYTA3NmRm',
     };
 
     Object.entries(userData).forEach(([key, value]) => {
       localStorage.setItem(key, value);
     });
-    StemuliNavigator.setToken(data.access_token);
-    console.log(persistentState)
+
+    console.log(persistentState);
     setPersistentState(userData);
   };
 
@@ -73,7 +69,7 @@ GameService.setURL(localStorage.getItem('baseURL'));
   const signIn = async (tenant, email, password) => {
     // Assuming signIn method is available and returns user details upon successful authentication
 
-    const user = await GameService.signIn(email,password)
+    const user = await GameService.signIn(email, password);
     if (user) {
       await authenticateUser(user);
       router.push('/');

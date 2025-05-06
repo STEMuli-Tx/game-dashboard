@@ -24,7 +24,7 @@ import { toast } from 'react-toastify';
   }
 
   setToken(token) {
-   this.api.defaults.headers['x-access-token'] = token;
+   this.api.defaults.headers['Authorization'] = `Bearer ${token}`;
  }
 
   async setAPIKey() {
@@ -52,7 +52,7 @@ import { toast } from 'react-toastify';
        });
 
        if(response.data) {
-          this.api.defaults.headers['x-access-token'] = response.data.accessToken;
+          this.api.defaults.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
           this.api.defaults.headers['x-api-key'] =  "Stemulikey"
        }
      return response.data;
