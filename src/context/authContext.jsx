@@ -68,11 +68,14 @@ export const AuthProvider = ({ children }) => {
   // Sign in function to update the user state
   const signIn = async (tenant, email, password) => {
     // Assuming signIn method is available and returns user details upon successful authentication
-
-    const user = await GameService.signIn(email, password);
-    if (user) {
-      await authenticateUser(user);
-      router.push('/');
+    try {
+      const user = await GameService.signIn(email, password);
+      if (user) {
+        await authenticateUser(user);
+        router.push('/');
+      }
+    } catch (e) {
+      throw e;
     }
   };
 

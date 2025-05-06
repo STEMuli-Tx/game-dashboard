@@ -45,17 +45,23 @@ import { toast } from 'react-toastify';
 
 
    async signIn(email,password) {
-     let response = null;
-       response = await this.api.post('/auth/login', {
-         email,
-         password,
-       });
+    try {
+      console.log("here")
+      let response = null;
+      response = await this.api.post('/auth/login', {
+        email,
+        password,
+      });
 
-       if(response.data) {
-          this.api.defaults.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
-          this.api.defaults.headers['x-api-key'] =  "Stemulikey"
-       }
-     return response.data;
+      if (response.data) {
+        this.api.defaults.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
+        this.api.defaults.headers['x-api-key'] = "Stemulikey"
+      }
+      return response.data;
+    }catch (e){
+      console.log("here")
+      throw e;
+    }
    }
 
 
