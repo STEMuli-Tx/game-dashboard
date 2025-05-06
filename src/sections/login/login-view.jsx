@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
+import { toast } from 'react-toastify';
 
 import StemuliNavigator from 'src/utils/stemuli-navigator/stemuli-navigator';
 
@@ -30,9 +31,32 @@ export default function LoginView() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [tenant, setTenant] = useState('STRIDE');
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleClick = async () => {
-    await signIn(tenant, email, password);
+    try {
+      setLoading(true);
+      await signIn(tenant, email, password);
+    } catch (error) {
+      console.log(error);
+      if (error?.response?.status === 401) {
+        toast.error('Invalid username or password', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      } else {
+        toast.error('An error occurred during login', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (event) => {
