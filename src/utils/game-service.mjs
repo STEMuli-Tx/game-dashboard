@@ -4,11 +4,13 @@ import { toast } from 'react-toastify';
 
  class GameService {
   #accessToken;
+  url;
 
   constructor() {
+    this.url = import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL;
     if (!GameService.instance) {
       this.api = axios.create({
-
+        url: this.url
       });
       GameService.instance = this;
     }
@@ -41,6 +43,22 @@ import { toast } from 'react-toastify';
     }
   }
 
+
+   async signIn(email,password) {
+     let response = null;
+       response = await this.api.post('/auth/login', {
+         email,
+         password,
+       });
+
+       if(response.data) {
+          this.api.defaults.headers['x-access-token'] = response.data.accessToken;
+          this.api.defaults.headers['x-api-key'] =  "Stemulikey"
+       }
+     return response.data;
+   }
+
+
   async getQuests(tags) {
     let response = null;
     if (this.api.defaults.baseURL === import.meta.env.VITE_PROD_GAME_SERVICE_BASE_URL) {
@@ -52,6 +70,9 @@ import { toast } from 'react-toastify';
 
     return response.data;
   }
+
+
+
 
   async resetQuests(questIds) {
     toast.info(`Resetting quests...`, {
